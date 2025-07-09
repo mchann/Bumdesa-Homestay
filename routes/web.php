@@ -18,16 +18,24 @@ use App\Http\Controllers\Pelanggan\PemesananController;
 use App\Http\Controllers\Admin\DaftarPemesananController;
 use App\Http\Controllers\Pemilik\PemilikPemesananController;
 
-//      HALAMAN UMUM
+// HALAMAN UMUM
 Route::get('/', [PostController::class, 'show_home'])->name('home');
-Route::get('/destinations', [PostController::class, 'show_destinations'])->name('destinations');
+
+// Destinations Routes
+Route::prefix('destinations')->group(function () {
+    Route::get('/', [PostController::class, 'show_destinations'])->name('destinations');
+    Route::get('/ijencrater', [PostController::class, 'ijenCrater'])->name('destinations.ijencrater');
+    Route::get('/gandrung', [PostController::class, 'gandrungPark'])->name('destinations.gandrung');
+    Route::get('/sendang', [PostController::class, 'sendangSeruni'])->name('destinations.sendang');
+});
+// Packages Routes
 Route::get('/packages', [PostController::class, 'show_packages'])->name('packages');
-Route::get('/homestays', [PostController::class, 'show_homestays'])->name('homestays');
-// Route::get('/homestay/{id}', [PostController::class, 'show_homestay_details'])->name('homestay.details');
-Route::get('/homestays', [PostController::class, 'show_homestays'])->name('homestay.index');
-Route::get('/homestay/{id}', [PostController::class, 'show_homestay_details'])->name('homestay.details');
 
-
+// Homestays Routes
+Route::prefix('homestays')->group(function () {
+    Route::get('/', [PostController::class, 'show_homestays'])->name('homestay.index');
+    Route::get('/{id}', [PostController::class, 'show_homestay_details'])->name('homestay.details');
+});
 
 
 //      LOGIN & REGISTER

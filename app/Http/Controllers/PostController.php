@@ -25,6 +25,24 @@ class PostController extends Controller
         return view('page.packages', ['title' => 'Packages']);
     }
 
+    // Menampilkan halaman Ijen Crater
+    public function ijenCrater()
+    {
+        return view('page.destinations.ijencrater', ['title' => 'Ijen Crater']);
+    }
+
+    // Menampilkan halaman Gandrung Park
+    public function gandrungPark()
+    {
+        return view('page.destinations.gandrung', ['title' => 'Gandrung Park']);
+    }
+
+    // Menampilkan halaman Sendang Seruni
+    public function sendangSeruni()
+    {
+        return view('page.destinations.sendang', ['title' => 'Sendang Seruni']);
+    }
+
     // Menampilkan daftar Homestays dengan pencarian
     public function show_homestays(Request $request)
 {
