@@ -11,11 +11,12 @@ use Exception;
 class GoogleController extends Controller
 {
     // Redirect ke Google
-    public function redirect()
-    {
-        return Socialite::driver('google')->redirect();
-    }
-
+   public function redirect()
+{
+    return Socialite::driver('google')
+        ->redirectUrl(env('GOOGLE_REDIRECT_URI')) // paksa ambil ulang dari .env
+        ->redirect();
+}
     public function callback()
     {
         try {
