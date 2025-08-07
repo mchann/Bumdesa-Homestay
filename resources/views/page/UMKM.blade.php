@@ -186,7 +186,7 @@
                     <h3 class="product-title">Kerajinan Bambu</h3>
                     <p class="product-desc">Produk kerajinan tangan</p>
                     <div class="product-footer">
-                        <span class="product-price">Rp 85.000</span>
+                        <span class="product-price">Rp 75.000</span>
                         <button class="order-btn">Pesan</button>
                     </div>
                 </div>
