@@ -37,7 +37,7 @@ Route::prefix('destinations')->group(function () {
 });
 
 // UMKM Route
-Route::get('/umkm', [PostController::class, 'show_umkm'])->name('umkm');
+Route::get('/umkm', [PostController::class, 'show_umkm'])->name('UMKM');
 
 // Homestays Routes
 Route::prefix('homestays')->group(function () {

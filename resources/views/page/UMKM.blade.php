@@ -202,7 +202,7 @@
                     <h3 class="product-title">Tenun Osing</h3>
                     <p class="product-desc">Kain tradisional Banyuwangi</p>
                     <div class="product-footer">
-                        <span class="product-price">Rp 250.000</span>
+                        <span class="product-price">Rp 255.000</span>
                         <button class="order-btn">Pesan</button>
                     </div>
                 </div>
