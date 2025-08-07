@@ -9,6 +9,14 @@ use App\Models\Kamar;
 use Carbon\Carbon;
 use App\Models\Homestay;
 use Illuminate\Support\Facades\Auth;
+use Midtrans\Snap;
+// use Midtrans\Config;
+use Illuminate\Support\Facades\Response;
+use App\Services\MidtransService;
+use Midtrans\Config as MidtransConfig;
+use Midtrans\Config;
+use Midtrans\VTWeb;
+
 
 class PemesananController extends Controller
 {
@@ -71,11 +79,63 @@ class PemesananController extends Controller
         return redirect()->route('pelanggan.pemesanan.pembayaran', ['id' => $pemesanan->pemesanan_id]);
     }
 
-    public function bayar($id)
-    {
-        $pemesanan = Pemesanan::with('kamar.homestay')->findOrFail($id);
-        return view('pelanggan.pemesanan.pembayaran', compact('pemesanan'));
-    }
+public function bayar($id)
+{
+    Config::$serverKey = 'SB-Mid-server-xxxx';
+    Config::$isProduction = false;
+    Config::$isSanitized = true;
+    Config::$is3ds = true;
+
+    $pemesanan = Pemesanan::findOrFail($id);
+
+    $params = [
+        'transaction_details' => [
+            'order_id' => 'ORDER-' . $pemesanan->id,
+            'gross_amount' => $pemesanan->total_harga,
+        ],
+        'customer_details' => [
+            'first_name' => $pemesanan->pelanggan->name,
+            'email' => $pemesanan->pelanggan->email,
+        ]
+    ];
+
+    // Ini akan redirect ke halaman Midtrans seperti VTWeb
+    $paymentUrl = Snap::createTransaction($params)->redirect_url;
+
+    return redirect($paymentUrl);
+}
+
+public function getSnapToken($id)
+{
+    $pemesanan = Pemesanan::findOrFail($id);
+
+    \Midtrans\Config::$serverKey = config('midtrans.serverKey');
+    \Midtrans\Config::$isProduction = config('midtrans.isProduction');
+    \Midtrans\Config::$isSanitized = true;
+    \Midtrans\Config::$is3ds = true;
+
+    $params = [
+        'transaction_details' => [
+            'order_id' => 'ORDER-' . $pemesanan->pemesanan_id,
+            'gross_amount' => (int) $pemesanan->total_harga,
+        ],
+        'customer_details' => [
+            'first_name' => auth()->user()->name,
+            'email' => auth()->user()->email,
+        ],
+        'expiry' => [
+            'start_time' => now()->format('Y-m-d H:i:s O'),
+            'unit' => 'hour',
+            'duration' => 2
+        ],
+    ];
+
+    $snapToken = \Midtrans\Snap::getSnapToken($params);
+
+    return Response::json([
+        'snap_token' => $snapToken
+    ]);
+}
 
     public function uploadBuktiTransfer(Request $request, $id)
 {

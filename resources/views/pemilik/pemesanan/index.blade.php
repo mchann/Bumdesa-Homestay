@@ -23,6 +23,30 @@
         </div>
     </div>
 
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <!-- Total Pemesanan -->
+        <div class="bg-white p-5 rounded-xl shadow-md">
+            <div class="text-gray-600 text-sm mb-1">Total Pemesanan</div>
+            <div class="text-2xl font-bold text-green-600">
+                {{ $totalPemesanan }}
+            </div>
+        </div>
+        <!-- Total Pemesanan Berhasil -->
+        <div class="bg-white p-5 rounded-xl shadow-md">
+            <div class="text-gray-600 text-sm mb-1">Pemesanan Berhasil</div>
+            <div class="text-2xl font-bold text-green-600">
+                {{ $totalPemesananBerhasil }}
+            </div>
+        </div>
+        <!-- Total Pendapatan -->
+        <div class="bg-white p-5 rounded-xl shadow-md">
+            <div class="text-gray-600 text-sm mb-1">Total Pendapatan</div>
+            <div class="text-2xl font-bold text-green-600">
+                Rp{{ number_format($totalPendapatan, 0, ',', '.') }}
+            </div>
+        </div>
+    </div>
+
     {{-- Filter Tabs --}}
     <div class="flex overflow-x-auto mb-8 scrollbar-hide">
         <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
@@ -69,6 +93,39 @@
         </div>
     @endif
 
+    <div class="flex flex-wrap gap-6">
+        {{-- Form Export Excel --}}
+        <form action="{{ route('pemilik.export.excel') }}" method="GET" target="_blank" class="flex items-end gap-2 bg-green-50 p-4 rounded-md border border-green-200">
+            <div>
+                <label for="excel_tanggal_awal" class="block text-sm text-gray-600 mb-1">Tanggal Awal</label>
+                <input type="date" id="excel_tanggal_awal" name="tanggal_awal" required class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+            <div>
+                <label for="excel_tanggal_akhir" class="block text-sm text-gray-600 mb-1">Tanggal Akhir</label>
+                <input type="date" id="excel_tanggal_akhir" name="tanggal_akhir" required class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-2 focus:ring-green-500 focus:outline-none">
+            </div>
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm transition duration-200">
+                Export Excel
+            </button>
+        </form>
+
+        {{-- Form Export PDF --}}
+        <form action="{{ route('pemilik.export.pdf') }}" method="GET" class="flex items-end gap-2 bg-red-50 p-4 rounded-md border border-red-200">
+            <div>
+                <label for="pdf_tanggal_awal" class="block text-sm text-gray-600 mb-1">Tanggal Awal</label>
+                <input type="date" id="pdf_tanggal_awal" name="tanggal_awal" required class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+            </div>
+            <div>
+                <label for="pdf_tanggal_akhir" class="block text-sm text-gray-600 mb-1">Tanggal Akhir</label>
+                <input type="date" id="pdf_tanggal_akhir" name="tanggal_akhir" required class="border border-gray-300 rounded-md px-3 py-1.5 text-sm focus:ring-2 focus:ring-red-500 focus:outline-none">
+            </div>
+            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm transition duration-200">
+                Export PDF
+            </button>
+        </form>
+    </div>
+
+
     {{-- Table --}}
     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
         @if($pemesanans->count() > 0)
@@ -83,7 +140,7 @@
                             <th class="px-6 py-4">Check-in</th>
                             <th class="px-6 py-4">Check-out</th>
                             <th class="px-6 py-4">Status</th>
-                            <th class="px-6 py-4">Bukti</th>
+                            <th class="px-6 py-4">Total Harga</th>
                             <th class="px-6 py-4 text-right">Aksi</th>
                         </tr>
                     </thead>
@@ -143,18 +200,9 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4">
-                                    @if ($pemesanan->bukti_pembayaran)
-                                        <a href="#" onclick="showImageModal('{{ asset('storage/' . $pemesanan->bukti_pembayaran) }}')" 
-                                           class="inline-flex items-center text-sm text-blue-600 hover:text-blue-800 hover:underline">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                            Lihat
-                                        </a>
-                                    @else
-                                        <span class="text-sm text-gray-500">-</span>
-                                    @endif
+                                    <div class="text-sm text-gray-800">
+                                        Rp{{ number_format($pemesanan->total_harga, 0, ',', '.') }}
+                                    </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div class="flex justify-end space-x-3">

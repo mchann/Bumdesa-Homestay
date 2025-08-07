@@ -22,15 +22,18 @@ class KamarController extends Controller
     }
 
     // Menampilkan daftar kamar
-    public function index()
-    {
-        $homestays = $this->getPemilikHomestays();
-       $kamars = Kamar::whereIn('homestay_id', $homestays->pluck('homestay_id'))
-            ->with('homestay', 'fasilitas', 'jenisKamar') 
-            ->get();
+   // Menampilkan daftar kamar
+public function index()
+{
+    $homestays = $this->getPemilikHomestays();
 
-        return view('pemilik.kamar.index', compact('kamars'));
-    }
+    $kamars = Kamar::whereIn('homestay_id', $homestays->pluck('homestay_id'))
+        ->with(['homestay', 'fasilitas', 'jenisKamar', 'penutupanTerbaru'])
+        ->get();
+
+    return view('pemilik.kamar.index', compact('kamars'));
+}
+
 
     // Menampilkan form untuk menambah kamar
    public function create()

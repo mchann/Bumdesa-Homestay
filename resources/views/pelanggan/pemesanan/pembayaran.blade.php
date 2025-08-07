@@ -80,44 +80,51 @@
                         <div id="countdown" class="fw-bold mt-2"></div>
                     </div>
                     
-                    <div class="border-start border-3 border-primary ps-3 mb-4">
+                    {{-- <div class="border-start border-3 border-primary ps-3 mb-4">
                         <h5 class="text-primary">Transfer Bank</h5>
                         <div class="ms-2">
                             <p class="mb-1"><i class="bi bi-bank me-2"></i>Bank: BNI</p>
                             <p class="mb-1"><i class="bi bi-credit-card-2-front me-2"></i>No. Rekening: <strong>1234567890</strong></p>
                             <p class="mb-0"><i class="bi bi-person-fill me-2"></i>Atas Nama: <strong>Homestay Tamansari</strong></p>
                         </div>
-                    </div>
+                    </div> --}}
                     
-                    <div class="bg-light p-3 rounded">
+                    {{-- <div class="bg-light p-3 rounded">
                         <h6><i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>Penting!</h6>
                         <ul class="mb-0">
                             <li>Transfer tepat sesuai nominal total pembayaran</li>
                             <li>Simpan bukti transfer Anda</li>
                             <li>Upload bukti transfer sebelum batas waktu</li>
                         </ul>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
             @if (now()->lessThan($pemesanan->batas_pembayaran))
                 <!-- Upload Form Card -->
                 <div class="card shadow-sm border-0">
-                    <div class="card-header bg-primary text-white">
+                    {{-- <div class="card-header bg-primary text-white">
                         <h4 class="mb-0"><i class="bi bi-upload me-2"></i>Upload Bukti Transfer</h4>
-                    </div>
+                    </div> --}}
                     <div class="card-body">
-                        <form action="{{ route('pelanggan.pemesanan.uploadBukti', $pemesanan->pemesanan_id) }}" method="POST" enctype="multipart/form-data" class="dropzone" id="uploadForm">
-                            @csrf
-                            <div class="mb-3">
+                        {{-- <form action="{{ route('pelanggan.pemesanan.uploadBukti', $pemesanan->pemesanan_id) }}" method="POST" enctype="multipart/form-data" class="dropzone" id="uploadForm"> --}}
+                           
+                            {{-- <div class="mb-3">
                                 <label for="buktiTransfer" class="form-label">Pilih File Bukti Transfer</label>
                                 <input class="form-control" type="file" name="bukti_transfer" id="buktiTransfer" required>
                                 <div class="form-text">Format: JPG, PNG, PDF (Maks. 2MB)</div>
-                            </div>
-                            <button type="submit" class="btn btn-primary w-100 py-2">
-                                <i class="bi bi-send-fill me-2"></i>Kirim Bukti Transfer
-                            </button>
-                        </form>
+                            </div> --}}
+                            <!-- Bayar Sekarang (Form VTWeb) -->
+<div class="text-center mb-4">
+    <form action="{{ route('pemesanan.bayar', ['id' => $pemesanan->pemesanan_id]) }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-primary btn-lg">
+            <i class="bi bi-wallet2 me-2"></i>Bayar Sekarang
+        </button>
+    </form>
+</div>
+
+                        {{-- </form> --}}
                     </div>
                 </div>
             @else
@@ -133,6 +140,7 @@
                         </div>
                     </div>
                 </div>
+
             @endif
         </div>
     </div>
@@ -158,6 +166,52 @@
         document.getElementById("countdown").innerHTML = `⏳ Sisa waktu: <span class="text-primary">${hours} jam ${minutes} menit ${seconds} detik</span>`;
     }, 1000);
 </script>
+
+{{-- Midtrans Snap JS --}}
+{{-- <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.clientKey') }}"></script> --}}
+
+{{-- <script>
+    document.getElementById('pay-button').addEventListener('click', function () {
+        fetch(`/snap/token/{{ $pemesanan->pemesanan_id }}`)
+            .then(response => response.json())
+            .then(data => {
+                snap.pay(data.snap_token, {
+                    onSuccess: function(result){
+                        window.location.href = '/pemesanan/sukses';
+                    },
+                    onPending: function(result){
+                        window.location.href = '/pemesanan/pending';
+                    },
+                    onError: function(result){
+                        window.location.href = '/pemesanan/gagal';
+                    },
+                    onClose: function(){
+                        alert("Anda menutup popup pembayaran.");
+                    }
+                });
+            });
+    });
+
+    // Countdown (hanya sekali deklarasi)
+    const countdownDeadline = new Date("{{ $pemesanan->batas_pembayaran }}").getTime();
+    const countdownInterval = setInterval(function() {
+        const now = new Date().getTime();
+        const distance = countdownDeadline - now;
+
+        if (distance < 0) {
+            clearInterval(countdownInterval);
+            document.getElementById("countdown").innerHTML = "<span class='text-danger'>Waktu pembayaran telah habis!</span>";
+            return;
+        }
+
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+        document.getElementById("countdown").innerHTML =
+            `⏳ Sisa waktu: <span class="text-primary">${hours} jam ${minutes} menit ${seconds} detik</span>`;
+    }, 1000);
+</script> --}}
 
 <style>
     .card {
