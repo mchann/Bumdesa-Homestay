@@ -16,10 +16,13 @@ class GoogleController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
+   
+
     public function callback()
     {
+        //  dd(env('GOOGLE_REDIRECT_URI'));
         try {
-         
+            
             $googleUser = Socialite::driver('google')->stateless()->user();
 
             // Cari user berdasarkan google_id atau email
