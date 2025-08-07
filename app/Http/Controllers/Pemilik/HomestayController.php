@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PemilikProfile;
 use App\Models\Peraturan;
+use App\Models\RoomClose;
 use App\Models\Kamar;
 use App\Models\Pemesanan;
 
@@ -119,29 +120,6 @@ public function store(Request $request)
         return redirect()->route('pemilik.homestay.index')->with('success', 'Homestay berhasil dihapus!');
     }
 
-
-// public function show($id) {
-//     $homestay = Homestay::where('id', $id)->with('kamar')->firstOrFail();
-
-//     $kamarGroup = $homestay->kamar->groupBy('nama_kamar')->map(function ($group) {
-//         return [
-//             'nama_kamar' => $group->first()->nama_kamar,
-//             'harga' => $group->first()->harga,
-//             'foto_kamar' => $group->first()->foto_kamar,
-//             'kapasitas' => $group->first()->kapasitas,
-//             'tipe_tempat_tidur' => $group->first()->tipe_tempat_tidur,
-//             'ukuran_kamar' => $group->first()->ukuran_kamar,
-//             'deskripsi_kamar' => $group->first()->deskripsi_kamar,
-//             'stok' => $group->count(),
-//         ];
-//     });
-
-//     return view('page.homestay_detail', [
-//         'title' => 'Detail Homestay',
-//         'homestay' => $homestay,
-//         'kamarGroup' => $kamarGroup,
-//     ]);
-// }
 
 
 }

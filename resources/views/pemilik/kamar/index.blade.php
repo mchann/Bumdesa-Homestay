@@ -67,6 +67,14 @@
                 
                 <!-- Action Buttons -->
                 <div class="absolute top-4 right-4 z-20 flex space-x-2">
+                    <a href="{{ url('pemilik/kamar/' . $kamar->kamar_id . '/tutup') }}"
+                        class="bg-white/90 text-yellow-600 p-2 rounded-full shadow-md hover:bg-yellow-500 hover:text-white transition-all duration-200"
+                        title="Tutup Kamar">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                    </a>
+
                     <a href="{{ route('pemilik.kamar.edit', $kamar->kamar_id) }}" 
                        class="bg-white/90 text-blue-600 p-2 rounded-full shadow-md hover:bg-blue-600 hover:text-white transition-all duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,6 +110,17 @@
                         {{ $kamar->jenisKamar->nama_jenis ?? '-' }}
                     </span>
                 </div>
+
+
+                 <!-- Penutupan Kamar -->
+    @if($kamar->penutupanTerbaru)
+        <div class="mt-4 bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-lg text-sm text-yellow-800">
+            <strong>Kamar Ditutup:</strong><br>
+            {{ \Carbon\Carbon::parse($kamar->penutupanTerbaru->start_date)->format('d M Y') }} - 
+            {{ \Carbon\Carbon::parse($kamar->penutupanTerbaru->end_date)->format('d M Y') }}<br>
+            <span class="italic">Alasan: {{ $kamar->penutupanTerbaru->alasan }}</span>
+        </div>
+    @endif
                 
                 <!-- Room Info -->
                 <div class="mt-4 flex items-center space-x-4 text-sm">

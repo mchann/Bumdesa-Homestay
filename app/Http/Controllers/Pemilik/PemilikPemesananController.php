@@ -13,7 +13,7 @@ use Illuminate\Validation\Rule;
 class PemilikPemesananController extends Controller
 {
     const ITEMS_PER_PAGE = 10;
-    
+
     // Status mapping for consistent filtering
     const STATUS_MAP = [
         'berhasil' => 'berhasil',
@@ -32,7 +32,7 @@ class PemilikPemesananController extends Controller
 
         // Get owner profile or redirect if not found
         $profile = PemilikProfile::where('user_id', $user->id)->firstOrFail();
-        
+
         // Get homestay or redirect if not found
         $homestay = Homestay::where('pemilik_id', $profile->pemilik_id)->firstOrFail();
 
@@ -51,11 +51,25 @@ class PemilikPemesananController extends Controller
             $query->where('status', $this->mapStatusFilter($status));
         }
 
+        // Clone query for statistics before pagination
+        $pemesanansForStats = (clone $query)->get();
+
+        // Statistik total
+        $totalPemesanan = $pemesanansForStats->count();
+        $totalPemesananBerhasil = $pemesanansForStats->where('status', 'berhasil')->count();
+        $totalPendapatan = $pemesanansForStats->where('status', 'berhasil')->sum('total_harga');
+
         // Paginate results
         $pemesanans = $query->paginate(self::ITEMS_PER_PAGE)
             ->appends(['status' => $status]);
 
-        return view('pemilik.pemesanan.index', compact('pemesanans', 'status'));
+        return view('pemilik.pemesanan.index', compact(
+            'pemesanans',
+            'status',
+            'totalPemesanan',
+            'totalPemesananBerhasil',
+            'totalPendapatan'
+        ));
     }
 
     /**

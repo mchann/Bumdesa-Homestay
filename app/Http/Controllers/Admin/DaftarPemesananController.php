@@ -29,7 +29,18 @@ class DaftarPemesananController extends Controller
         $pemesanans = $query->latest()->get();
         $homestays = Homestay::all();
 
-        return view('admin.pemesanan.index', compact('pemesanans', 'homestays'));
+        // Statistik/Laporan
+        $totalPemesanan = $pemesanans->count();
+        $totalPemesananBerhasil = $pemesanans->where('status', 'berhasil')->count();
+        $totalPendapatan = $pemesanans->where('status', 'berhasil')->sum('total_harga');
+
+        return view('admin.pemesanan.index', compact(
+            'pemesanans', 
+            'homestays',
+            'totalPemesanan',
+            'totalPemesananBerhasil',
+            'totalPendapatan'
+        ));
     }
 
     // Mengubah status pemesanan (terima/tolak)

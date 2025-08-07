@@ -55,6 +55,14 @@
            Sendang Seruni
         </a>
     </li>
+    <li class="nav-item">
+                    <a href="{{ route('packages') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('packages') ? 'active bg-gradient-primary' : '' }}">
+                        <span class="position-relative">
+                            Tour Packages
+                            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
+                        </span>
+                    </a>
+                </li>
     <li><hr class="dropdown-divider"></li>
     <li>
         <a class="dropdown-item text-primary fw-semibold" href="{{ route('destinations') }}">
@@ -65,13 +73,13 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('packages') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('packages') ? 'active bg-gradient-primary' : '' }}">
-                        <span class="position-relative">
-                            Tour Packages
-                            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
-                        </span>
-                    </a>
-                </li>
+    <a href="{{ route('UMKM') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('UMKM') ? 'active bg-gradient-primary' : '' }}">
+        <span class="position-relative">
+            UMKM
+            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
+        </span>
+    </a>
+</li>
                 <li class="nav-item">
                     <a href="{{ route('homestay.index') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('homestay.index') ? 'active bg-gradient-primary' : '' }}">
                         <span class="position-relative">

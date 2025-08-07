@@ -17,6 +17,12 @@ use App\Http\Controllers\Admin\PeraturanController;
 use App\Http\Controllers\Pelanggan\PemesananController;
 use App\Http\Controllers\Admin\DaftarPemesananController;
 use App\Http\Controllers\Pemilik\PemilikPemesananController;
+use App\Http\Controllers\Pemilik\RoomCloseController;
+use App\Http\Controllers\MidtransController;
+use App\Http\Controllers\Admin\ExportExcelController;
+use App\Http\Controllers\Pemilik\ExportExcelPemilikController;
+use App\Http\Controllers\Admin\ExportPdfController;
+use App\Http\Controllers\Pemilik\ExportPdfPemilikController;
 
 // HALAMAN UMUM
 Route::get('/', [PostController::class, 'show_home'])->name('home');
@@ -27,9 +33,11 @@ Route::prefix('destinations')->group(function () {
     Route::get('/ijencrater', [PostController::class, 'ijenCrater'])->name('destinations.ijencrater');
     Route::get('/gandrung', [PostController::class, 'gandrungPark'])->name('destinations.gandrung');
     Route::get('/sendang', [PostController::class, 'sendangSeruni'])->name('destinations.sendang');
+    Route::get('/packages', [PostController::class, 'show_packages'])->name('packages');
 });
-// Packages Routes
-Route::get('/packages', [PostController::class, 'show_packages'])->name('packages');
+
+// UMKM Route
+Route::get('/umkm', [PostController::class, 'show_umkm'])->name('UMKM');
 
 // Homestays Routes
 Route::prefix('homestays')->group(function () {
@@ -74,6 +82,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/pelanggan/profile', [ProfilePelangganController::class, 'update'])->name('pelanggan.profile.update');
 });
 
+Route::get('/bayar/{id}', [MidtransController::class, 'bayar'])->name('midtrans.bayar');
+Route::get('/snap/token/{id}', [PemesananController::class, 'getSnapToken']);
+Route::get('/pemesanan/bayar/{id}', [PemesananController::class, 'bayar'])->name('pelanggan.pemesanan.bayar');
+Route::post('/pemesanan/{id}/bayar', [PemesananController::class, 'bayar'])->name('pemesanan.bayar');
 
 
 //      ADMIN BUMDES
@@ -100,7 +112,9 @@ Route::get('/pemilik-homestay', [RegisteredUserController::class, 'daftarPemilik
     Route::put('/pemilik/{id}/nonaktifkan', [ProfileController::class, 'nonaktifkan'])->name('admin.nonaktifkan');
     Route::put('/pemilik/{id}/aktifkan', [ProfileController::class, 'aktifkan'])->name('admin.aktifkan');
 
-    
+    // Export
+    Route::get('/pemesanan/export-excel', [ExportExcelController::class, 'export'])->name('export.excel');
+    Route::get('/pemesanan/export-pdf', [ExportPdfController::class, 'export'])->name('export.pdf');
 
      Route::get('/pemesanan', [DaftarPemesananController::class, 'index'])->name('pemesanan.index');
       Route::patch('/pemesanan/{id}/update-status', [DaftarPemesananController::class, 'updateStatus'])->name('pemesanan.updateStatus');
@@ -142,6 +156,17 @@ Route::middleware(['auth', 'verified', 'role:pemilik'])->prefix('pemilik')->name
         'update' => 'homestay.update',
         'destroy' => 'homestay.destroy'
     ]);
+
+    // Tutup Kamar (Room Close)
+    Route::prefix('kamar')->name('room_close.')->group(function () {
+        Route::get('{id}/tutup', [RoomCloseController::class, 'create'])->name('create');
+        Route::post('tutup', [RoomCloseController::class, 'store'])->name('store');
+    });
+
+
+    // export
+    Route::get('/export-excel', [ExportExcelPemilikController::class, 'export'])->name('export.excel');
+    Route::get('/export-pdf', [ExportPdfPemilikController::class, 'export'])->name('export.pdf');
 
     // Pemesanan routes - Fixed version
     Route::prefix('pemesanan')->name('pemesanan.')->group(function() {
