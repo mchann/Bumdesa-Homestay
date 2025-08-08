@@ -17,12 +17,12 @@
         <!-- Tambahan konfirmasi admin (tanpa mengubah variabel yang ada) -->
         <div class="alert alert-info mb-4">
             <h4 class="alert-heading">Status Verifikasi Admin</h4>
-            <p class="mb-1">Pembayaran sedang dalam proses verifikasi</p>
-            <small class="text-muted">Anda akan mendapat notifikasi ketika sudah dikonfirmasi</small>
+            <p class="mb-1">Pembayaran telah berhasil</p>
+            <small class="text-muted">Anda akan mendapat notifikasi pemesanan kamar anda.</small>
         </div>
 
         <p class="text-gray-700 mb-4">
-            Bukti transfer Anda telah berhasil dikirim dan sedang kami verifikasi. <br>
+            Pembayaran Anda telah berhasil dibayar dan sedang kami verifikasi. <br>
             Mohon tunggu konfirmasi dari admin sebelum melanjutkan.
         </p>
         <div class="d-flex justify-content-center gap-2">
