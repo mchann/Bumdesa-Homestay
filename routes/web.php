@@ -120,6 +120,13 @@ Route::get('/pemilik-homestay', [RegisteredUserController::class, 'daftarPemilik
       Route::patch('/pemesanan/{id}/update-status', [DaftarPemesananController::class, 'updateStatus'])->name('pemesanan.updateStatus');
        Route::get('/pemesanan/{id}', [DaftarPemesananController::class, 'show'])->name('pemesanan.show');
 
+Route::get('/simulasi-pembayaran/{id}', function ($id) {
+    $pemesanan = \App\Models\Pemesanan::findOrFail($id);
+    return view('pelanggan.pembayaran.simulasi', compact('pemesanan'));
+})->name('simulasi.pembayaran');
+
+Route::get('/pemesanan/{id}/success', [PemesananController::class, 'pembayaranSukses'])->name('pemesanan.success');
+
 
        // Fasilitas 
        Route::resource('fasilitas', FasilitasController::class)->names([

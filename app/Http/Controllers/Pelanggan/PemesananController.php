@@ -167,14 +167,24 @@ public function getSnapToken($id)
         return view('pelanggan.pemesanan.pembayaran', compact('pemesanan'));
     }
 
-    // Jika akses langsung via route
-    public function success()
+  // Jika akses langsung via route
+    public function pembayaranSukses($id)
 {
+    $pemesanan = Pemesanan::findOrFail($id);
+
     return view('pelanggan.pemesanan.pemesanan_success', [
-        'invoice' => 'INV-000000',
+        'invoice' => 'ORDER-' . $pemesanan->id,
         'tanggal' => now()->format('d M Y, H:i'),
-        'total' => '0'
+        'total' => number_format($pemesanan->total_harga, 0, ',', '.')
     ]);
 }
+
+public function showSimulasi($id)
+{
+    $pemesanan = Pemesanan::findOrFail($id);
+    return view('pelanggan.pembayaran.simulasi', compact('pemesanan'));
+}
+
+
 
 }
