@@ -8,7 +8,7 @@
         <h3 class="mb-4 text-center">Pembayaran Virtual Account</h3>
 
         <div class="d-flex align-items-center mb-4">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/1/1a/BCA_logo.svg" alt="Logo BCA" height="40" class="me-3">
+            <img src="{{ asset('img/bca.png') }}" alt="Logo BCA" height="40" class="me-3">
             <h5 class="mb-0">Bank Central Asia (BCA)</h5>
         </div>
 
