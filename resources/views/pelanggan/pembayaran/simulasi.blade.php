@@ -37,7 +37,7 @@
         </ol>
 
         <div class="text-center mt-4">
-            {{-- <p class="text-muted">Anda akan diarahkan ke halaman konfirmasi dalam <span id="countdown">20</span> detik...</p> --}}
+            <p class="text-white"> <span id="countdown"></span> </p>
         </div>
     </div>
 </div>
