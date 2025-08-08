@@ -116,13 +116,11 @@
                             </div> --}}
                             <!-- Bayar Sekarang (Form VTWeb) -->
 <div class="text-center mb-4">
-    <form action="{{ route('pemesanan.bayar', ['id' => $pemesanan->pemesanan_id]) }}" method="POST">
-        @csrf
-        <button type="submit" class="btn btn-primary btn-lg">
-            <i class="bi bi-wallet2 me-2"></i>Bayar Sekarang
-        </button>
-    </form>
+    <a href="{{ route('simulasi.pembayaran', ['id' => $pemesanan->pemesanan_id]) }}" class="btn btn-primary btn-lg">
+        <i class="bi bi-wallet2 me-2"></i>Bayar Sekarang
+    </a>
 </div>
+
 
                         {{-- </form> --}}
                     </div>
