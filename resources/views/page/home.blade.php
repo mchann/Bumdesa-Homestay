@@ -360,10 +360,10 @@
             
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="{{ asset('img/dialog.jpg') }}" class="card-img-top" alt="Air Terjun Tumpak Sewu">
+                    <img src="{{ asset('img/car-seruni.png') }}" class="card-img-top" alt="Air Terjun Tumpak Sewu">
                     <div class="card-body">
-                        <h5 class="card-title">Air Terjun Tumpak Sewu</h5>
-                        <p class="card-text">Air terjun setinggi 120 meter dengan pemandangan spektakuler.</p>
+                        <h5 class="card-title">Sendang Seruni</h5>
+                        <p class="card-text">Pemandian Naturistic Tamansari</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-primary">4.9 <i class="fas fa-star"></i></span>
                             <a href="#" class="text-primary">Selengkapnya <i class="fas fa-arrow-right"></i></a>
@@ -374,10 +374,10 @@
             
             <div class="col-md-4 mb-4">
                 <div class="card h-100">
-                    <img src="{{ asset('img/hv-jiwa-jawa.jpg') }}" class="card-img-top" alt="Kebun Kopi Tamansari">
+                    <img src="{{ asset('img/car-terakota.jpg') }}" class="card-img-top" alt="Kebun Kopi Tamansari">
                     <div class="card-body">
-                        <h5 class="card-title">Kebun Kopi Tamansari</h5>
-                        <p class="card-text">Wisata agro melihat proses penanaman hingga pengolahan kopi khas Ijen.</p>
+                        <h5 class="card-title">Taman Gandrung Terakota</h5>
+                        <p class="card-text">Wisata taman 1000 patung Gandrung Banyuwangi</p>
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="badge bg-primary">4.7 <i class="fas fa-star"></i></span>
                             <a href="#" class="text-primary">Selengkapnya <i class="fas fa-arrow-right"></i></a>
