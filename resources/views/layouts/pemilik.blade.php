@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Pemilik</title>
+    <link rel="icon" href="{{ asset('img/logo-tamansari.png') }}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -90,9 +91,6 @@
                         <span class="dropdown-arrow material-icons transition-transform">expand_more</span>
                     </button>
                     <div class="dropdown-content">
-                         <a href="{{ route('pemilik.jenis-kamar.index') }}" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">list</span> Daftar Jenis Kamar
-                        </a>
                         <a href="{{ route('pemilik.kamar.index') }}" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
                             <span class="material-icons mr-2">list</span> Daftar Kamar
                         </a>
@@ -112,39 +110,12 @@
                         <a href="{{ route('pemilik.pemesanan.index') }}" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
                             <span class="material-icons mr-2">list</span> Daftar Pemesanan
                         </a>
-                        <a href="#" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">calendar_today</span> Kalender
-                        </a>
-                    </div>
                 </div>
                 
                 <a href="#" class="flex items-center p-2 rounded hover:bg-gray-800 transition">
                     <span class="material-icons mr-2">payment</span> Pembayaran
                 </a>
-                <a href="#" class="flex items-center p-2 rounded hover:bg-gray-800 transition">
-                    <span class="material-icons mr-2">rate_review</span> Ulasan & Rating
-                </a>
-                
-                <!-- Dropdown Laporan -->
-                <div class="dropdown">
-                    <button class="dropdown-toggle flex items-center justify-between w-full p-2 rounded hover:bg-gray-800 transition">
-                        <div class="flex items-center">
-                            <span class="material-icons mr-2">analytics</span> Statistik & Laporan
-                        </div>
-                        <span class="dropdown-arrow material-icons transition-transform">expand_more</span>
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="#" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">show_chart</span> Statistik
-                        </a>
-                        <a href="#" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">description</span> Laporan Bulanan
-                        </a>
-                        <a href="#" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">summarize</span> Laporan Tahunan
-                        </a>
-                    </div>
-                </div>
+            
             </nav>
         </aside>
 
@@ -199,9 +170,7 @@
                             <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
                                 <i class="fas fa-home mr-2 text-gray-400"></i> Halaman Utama
                             </a>  
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
-                                <i class="fas fa-cog mr-2 text-gray-400"></i> Pengaturan Akun
-                            </a>                   
+                 
 
                             <!-- Logout Section -->
                             <form method="POST" action="{{ route('logout') }}">
@@ -251,59 +220,6 @@
                     dropdown.classList.toggle('active');
                 });
             });
-        });
-
-        // Dummy chart data for Order Chart
-        const orderChart = new Chart(document.getElementById('orderChart'), {
-            type: 'bar',
-            data: {
-                labels: ['23 Feb', '24 Feb', '25 Feb', '26 Feb'],
-                datasets: [
-                    {
-                        label: 'Berhasil',
-                        backgroundColor: '#024B7A',
-                        data: [95, 70, 45, 30],
-                    },
-                    {
-                        label: 'Dibatalkan',
-                        backgroundColor: '#44B7C2',
-                        data: [15, 10, 7, 5],
-                    },
-                    {
-                        label: 'Pending',
-                        backgroundColor: '#FFAE49',
-                        data: [10, 5, 3, 2],
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                },
-                scales: {
-                    y: { beginAtZero: true }
-                }
-            }
-        });
-
-        const statusChart = new Chart(document.getElementById('statusChart'), {
-            type: 'doughnut',
-            data: {
-                labels: ['Lunas', 'Pending', 'Gagal'],
-                datasets: [{
-                    label: 'Status Pemesanan',
-                    data: [60, 25, 15],
-                    backgroundColor: ['#024B7A', '#44B7C2', '#FFAE49'],
-                    hoverOffset: 4
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'right' }
-                }
-            }
         });
     </script>
 </body>

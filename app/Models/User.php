@@ -30,7 +30,7 @@ class User extends Authenticatable
         ];
     }
 
-    // 🔗 Relasi ke profil masing-masing
+    //  Relasi ke profil masing-masing
     public function adminProfile()
     {
         return $this->hasOne(AdminProfile::class);

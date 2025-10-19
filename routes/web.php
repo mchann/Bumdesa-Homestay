@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PostController;
-use App\Http\Controllers\ProfilePelangganController;
+use App\Http\Controllers\Pelanggan\ProfilePelangganController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\FacebookController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -13,6 +13,7 @@ use App\Http\Controllers\Pemilik\PemilikProfileController;
 use App\Http\Controllers\Pemilik\HomestayController;
 use App\Http\Controllers\Pemilik\KamarController;
 use App\Http\Controllers\Pemilik\FasilitasController;
+use App\Http\Controllers\Pemilik\JenisKamarController;
 use App\Http\Controllers\Admin\PeraturanController;
 use App\Http\Controllers\Pelanggan\PemesananController;
 use App\Http\Controllers\Admin\DaftarPemesananController;
@@ -23,6 +24,9 @@ use App\Http\Controllers\Admin\ExportExcelController;
 use App\Http\Controllers\Pemilik\ExportExcelPemilikController;
 use App\Http\Controllers\Admin\ExportPdfController;
 use App\Http\Controllers\Pemilik\ExportPdfPemilikController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Pemilik\DashboardPemilikController;
+
 
 // HALAMAN UMUM
 Route::get('/', [PostController::class, 'show_home'])->name('home');
@@ -78,6 +82,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::put('/pelanggan/profile', [ProfilePelangganController::class, 'update'])->name('pelanggan.profile.update');
 });
 
+// DOWNLOAD INVOICE ROUTES
+Route::middleware(['auth'])->group(function () {
+    Route::get('/pelanggan/invoice/{id}/download/{type?}', [PemesananController::class, 'downloadInvoice'])
+        ->name('pelanggan.invoice.download');
+});
+
 Route::get('/bayar/{id}', [MidtransController::class, 'bayar'])->name('midtrans.bayar');
 Route::get('/snap/token/{id}', [PemesananController::class, 'getSnapToken']);
 Route::get('/pemesanan/bayar/{id}', [PemesananController::class, 'bayar'])->name('pelanggan.pemesanan.bayar');
@@ -90,11 +100,18 @@ Route::get('/simulasi-pembayaran/{id}', function ($id) {
 
 Route::get('/pemesanan/{id}/success', [PemesananController::class, 'pembayaranSukses'])->name('pemesanan.success');
 
+// CORRECTED ROUTES (FIX TYPO)
+Route::middleware(['auth'])->group(function () {
+    Route::get('/history-pemesanan', [PemesananController::class, 'history'])->name('pelanggan.history');
+    Route::get('/cek-status-pemesanan', [PemesananController::class, 'cekStatus'])->name('pelanggan.cek-status');
+    Route::get('/detail-pemesanan/{id}', [PemesananController::class, 'detail'])->name('pelanggan.pemesanan.detail'); // ✅ FIXED
+}); 
+
 // ADMIN BUMDES
 Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('/dashboard', fn () => view('admin.dashboard'))->name('dashboard');
-
-    // Pemilik Homestay
+    // Rute yang benar untuk dashboard admin
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+   // Pemilik Homestay
     Route::get('/pemilik-homestay', [RegisteredUserController::class, 'daftarPemilik'])->name('pemilik.list');
     Route::get('/daftarpemilik', fn () => view('admin.daftarpemilik'))->name('pendaftaran.pemilik');
     Route::post('/daftarpemilik', [RegisteredUserController::class, 'storePemilik'])->name('store.pemilik');
@@ -131,15 +148,28 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->name('ad
         'destroy' => 'fasilitas.destroy'
     ]);
 
+    // Jenis Kamar
+    Route::resource('jenis-kamar', JenisKamarController::class)->names([
+        'index' => 'jenis-kamar.index',
+        'create' => 'jenis-kamar.create',
+        'store' => 'jenis-kamar.store',
+        'edit' => 'jenis-kamar.edit',
+        'update' => 'jenis-kamar.update',
+        'destroy' => 'jenis-kamar.destroy'
+    ]);
+
     // Peraturan
     Route::resource('peraturan', PeraturanController::class);
 });
 
 // PEMILIK HOMESTAY
-Route::middleware(['auth', 'verified', 'role:pemilik'])->prefix('pemilik')->name('pemilik.')->group(function () {
-    Route::get('/dashboard', fn () => view('pemilik.dashboard'))->name('dashboard');
-
-    // Profile Pemilik
+Route::middleware(['auth', 'verified', 'role:pemilik'])
+    ->prefix('pemilik')
+    ->name('pemilik.')
+    ->group(function () {
+        Route::get('/dashboard', [DashboardPemilikController::class, 'index'])
+            ->name('dashboard');
+// Profile Pemilik
     Route::prefix('profile')->name('profile.')->group(function () {
         Route::get('/', [PemilikProfileController::class, 'show'])->name('show');
         Route::get('/edit', [PemilikProfileController::class, 'edit'])->name('edit');
@@ -184,16 +214,6 @@ Route::middleware(['auth', 'verified', 'role:pemilik'])->prefix('pemilik')->name
         'update' => 'kamar.update',
         'destroy' => 'kamar.destroy'
     ]);
-
-    // Jenis Kamar
-    Route::resource('jenis-kamar', \App\Http\Controllers\Pemilik\JenisKamarController::class)->names([
-        'index' => 'jenis-kamar.index',
-        'create' => 'jenis-kamar.create',
-        'store' => 'jenis-kamar.store',
-        'edit' => 'jenis-kamar.edit',
-        'update' => 'jenis-kamar.update',
-        'destroy' => 'jenis-kamar.destroy'
-    ]);
 });
 
 // PELANGGAN
@@ -203,6 +223,12 @@ Route::middleware(['auth'])->prefix('pelanggan')->name('pelanggan.')->group(func
     Route::get('pemesanan/success', [PemesananController::class, 'success'])->name('pemesanan.success');
     Route::get('pemesanan/{id}/pembayaran', [PemesananController::class, 'showPembayaranForm'])->name('pemesanan.pembayaran');
     Route::post('pemesanan/{id}/upload-bukti', [PemesananController::class, 'uploadBuktiTransfer'])->name('pemesanan.uploadBukti');
+
+    // Riwayat Pemesanan
+    Route::get('pemesanan', [PemesananController::class, 'index'])
+        ->name('pemesanan.index');
+    Route::get('pemesanan/{id}', [PemesananController::class, 'show'])
+        ->name('pemesanan.show');
 });
 
 require __DIR__ . '/auth.php';

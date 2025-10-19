@@ -70,6 +70,14 @@
                         </div>
                     @endif
 
+                    @if(session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show mb-4">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     @if($errors->any())
                         <div class="alert alert-danger alert-dismissible fade show mb-4">
                             <i class="fas fa-exclamation-triangle me-2"></i>
@@ -110,7 +118,7 @@
                                     </span>
                                     <input type="text" name="nama_lengkap" 
                                            class="form-control @error('nama_lengkap') is-invalid @enderror"
-                                           value="{{ old('nama_lengkap', optional($profile)->nama_lengkap) }}" 
+                                           value="{{ old('nama_lengkap', optional($profile)->nama_lengkap ?? Auth::user()->name) }}" 
                                            required>
                                     @error('nama_lengkap')
                                         <div class="invalid-feedback">{{ $message }}</div>
@@ -120,14 +128,15 @@
 
                             <!-- Nomor Telepon -->
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Nomor Telepon</label>
+                                <label class="form-label fw-semibold">Nomor Telepon <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-phone text-muted"></i>
                                     </span>
                                     <input type="text" name="nomor_telepon" 
                                            class="form-control @error('nomor_telepon') is-invalid @enderror"
-                                           value="{{ old('nomor_telepon', optional($profile)->nomor_telepon) }}">
+                                           value="{{ old('nomor_telepon', optional($profile)->nomor_telepon) }}" 
+                                           required pattern="[0-9]+" title="Hanya angka">
                                     @error('nomor_telepon')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -136,14 +145,15 @@
 
                             <!-- Kewarganegaraan -->
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Kewarganegaraan</label>
+                                <label class="form-label fw-semibold">Kewarganegaraan <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-globe text-muted"></i>
                                     </span>
                                     <input type="text" name="kewarganegaraan" 
                                            class="form-control @error('kewarganegaraan') is-invalid @enderror"
-                                           value="{{ old('kewarganegaraan', optional($profile)->kewarganegaraan) }}">
+                                           value="{{ old('kewarganegaraan', optional($profile)->kewarganegaraan) }}" 
+                                           required>
                                     @error('kewarganegaraan')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -170,18 +180,24 @@
 
                             <!-- Tanggal Lahir -->
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">Tanggal Lahir</label>
+                                <label class="form-label fw-semibold">Tanggal Lahir <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <span class="input-group-text bg-light">
                                         <i class="fas fa-calendar-day text-muted"></i>
                                     </span>
-                                    <input type="date" name="tgl_lahir" 
+                                    <input type="date" id="tgl_lahir" name="tgl_lahir" 
                                            class="form-control @error('tgl_lahir') is-invalid @enderror"
-                                           value="{{ old('tgl_lahir', optional($profile)->tgl_lahir) }}">
+                                           value="{{ old('tgl_lahir', optional($profile)->tgl_lahir) }}" 
+                                           required max="{{ date('Y-m-d') }}" min="1900-01-01">
                                     @error('tgl_lahir')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
+                                    <!-- Custom error untuk umur < 17 tahun (client-side) -->
+                                    <div id="umur-error" class="invalid-feedback d-none">
+                                        Umur minimal 17 tahun.
+                                    </div>
                                 </div>
+                                <small class="text-muted">Minimal umur 17 tahun</small>
                             </div>
                         </div>
 
@@ -254,13 +270,19 @@
 </style>
 
 <script>
-// Client-side validation
+// Client-side validation (Bootstrap + custom umur)
 (function() {
     'use strict';
     window.addEventListener('load', function() {
         var forms = document.getElementsByClassName('needs-validation');
         var validation = Array.prototype.filter.call(forms, function(form) {
             form.addEventListener('submit', function(event) {
+                // Cek validasi umur sebelum submit
+                if (!validateUmur()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    return false;
+                }
                 if (form.checkValidity() === false) {
                     event.preventDefault();
                     event.stopPropagation();
@@ -270,5 +292,48 @@
         });
     }, false);
 })();
+
+// Fungsi validasi umur minimal 17 tahun
+function validateUmur() {
+    const tglLahirInput = document.getElementById('tgl_lahir');
+    const umurError = document.getElementById('umur-error');
+    if (!tglLahirInput || !tglLahirInput.value) {
+        // Jika kosong, biarkan server-side handle (required sudah ada)
+        return true;
+    }
+
+    const today = new Date();
+    const birthDate = new Date(tglLahirInput.value);
+    const minUmur = 17;
+    const minBirthDate = new Date(today.getFullYear() - minUmur, today.getMonth(), today.getDate());
+
+    // Hitung umur akurat
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+    }
+
+    if (age < minUmur || birthDate > minBirthDate) {
+        tglLahirInput.classList.add('is-invalid');
+        umurError.classList.remove('d-none');
+        return false;
+    } else {
+        tglLahirInput.classList.remove('is-invalid');
+        umurError.classList.add('d-none');
+        return true;
+    }
+}
+
+// Event listener untuk real-time validation tanggal lahir
+document.addEventListener('DOMContentLoaded', function() {
+    const tglLahirInput = document.getElementById('tgl_lahir');
+    if (tglLahirInput) {
+        tglLahirInput.addEventListener('change', validateUmur);
+        tglLahirInput.addEventListener('blur', validateUmur);
+        // Set max date ke hari ini
+        tglLahirInput.max = new Date().toISOString().split('T')[0];
+    }
+});
 </script>
 @endsection

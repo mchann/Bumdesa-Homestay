@@ -64,11 +64,6 @@
                     </a>
                 </li>
     <li><hr class="dropdown-divider"></li>
-    <li>
-        <a class="dropdown-item text-primary fw-semibold" href="{{ route('destinations') }}">
-            View All Destinations
-        </a>
-    </li>
 </ul>
                 </li>
 
@@ -109,10 +104,9 @@
                             <li><a class="dropdown-item py-2 px-3" href="{{ route('pemilik.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
                         @elseif(Auth::user()->role === 'pelanggan')
                             <li><a class="dropdown-item py-2 px-3" href="{{ route('pelanggan.profile') }}"><i class="fas fa-user me-2"></i>My Account</a></li>
-                            <li><a class="dropdown-item py-2 px-3" href="#"><i class="fas fa-credit-card me-2"></i>My Card</a></li>
-                            <li><a class="dropdown-item py-2 px-3" href="#"><i class="fas fa-shopping-bag me-2"></i>Purchase List</a></li>
-                            <li><a class="dropdown-item py-2 px-3" href="#"><i class="fas fa-clipboard-list me-2"></i>My Order</a></li>
-                            <li><a class="dropdown-item py-2 px-3" href="#"><i class="fas fa-exchange-alt me-2"></i>Refund</a></li>
+                            <li><a class="dropdown-item py-2 px-3" href="{{ route('pelanggan.pemesanan.index') }}">
+                                <i class="fas fa-clipboard-list me-2"></i>My Order
+                            </a></li>
                         @endif
                         <li><hr class="dropdown-divider my-1"></li>
                         <li>
@@ -124,8 +118,7 @@
                     </ul>
                 </div>
             @else
-                <a href="{{ route('login') }}" class="nav-link text-light d-flex align-items-center px-3 py-2 rounded bg-primary-hover">
-                    <i class="fas fa-sign-in-alt me-2"></i> 
+                <a href="{{ route('login') }}" class="nav-link text-light d-flex align-items-center px-3 py-2 rounded bg-primary-hover"> 
                     <span class="d-none d-lg-inline">Login</span>
                 </a>
             @endauth

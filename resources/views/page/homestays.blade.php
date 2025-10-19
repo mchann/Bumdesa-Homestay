@@ -375,7 +375,7 @@
                             </div>
                             <p class="card-text mb-4">"Pelayanan sangat memuaskan! Homestaynya bersih dan nyaman. Akan kembali lagi."</p>
                             <div class="d-flex align-items-center justify-content-center">
-                                <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Client" width="50" height="50">
+                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle mr-3" width="50" height="50" alt="Testimonial 3">
                                 <div>
                                     <h6 class="mb-0">John Doe</h6>
                                     <small class="text-muted">Traveler</small>
@@ -399,7 +399,7 @@
                             </div>
                             <p class="card-text mb-4">"Lokasi strategis dekat dengan pusat kota. Fasilitas lengkap dan staff sangat ramah."</p>
                             <div class="d-flex align-items-center justify-content-center">
-                                <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Client" width="50" height="50">
+                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle mr-3" width="50" height="50" alt="Testimonial 3">
                                 <div>
                                     <h6 class="mb-0">Jane Smith</h6>
                                     <small class="text-muted">Family Traveler</small>
@@ -423,7 +423,7 @@
                             </div>
                             <p class="card-text mb-4">"Harga sangat terjangkau untuk kualitas yang diberikan. Sangat recommended untuk backpacker."</p>
                             <div class="d-flex align-items-center justify-content-center">
-                                <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Client" width="50" height="50">
+                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle mr-3" width="50" height="50" alt="Testimonial 3">
                                 <div>
                                     <h6 class="mb-0">Robert Johnson</h6>
                                     <small class="text-muted">Backpacker</small>

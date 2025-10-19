@@ -32,13 +32,6 @@
             <p class="text-gray-600">Kelola semua kamar yang tersedia di homestay Anda</p>
         </div>
         <div class="flex space-x-3">
-            <a href="{{ route('pemilik.jenis-kamar.create') }}" 
-               class="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg shadow hover:bg-indigo-700 transition">
-                <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Jenis Kamar
-            </a>
             <a href="{{ route('pemilik.kamar.create') }}" 
                class="flex items-center bg-green-600 text-white px-4 py-2 rounded-lg shadow hover:bg-green-700 transition">
                 <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">

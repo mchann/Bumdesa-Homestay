@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Admin Bumdes</title>
+    <link rel="icon" href="{{ asset('img/logo-tamansari.png') }}" type="image/x-icon">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -79,21 +80,16 @@
                 </div>
 
                 
-                <div class="dropdown">
-                    <button class="dropdown-toggle flex items-center justify-between w-full p-2 rounded hover:bg-gray-800 transition">
-                        <div class="flex items-center">
-                            <!-- Updated Icon for Homestay Facilities -->
-                            <span class="material-icons mr-2">home</span> Fasilitas
-                        </div>
-                        <span class="dropdown-arrow material-icons transition-transform">expand_more</span>
-                    </button>                                       
-                    <div class="dropdown-content">
-                        <a href="{{ route('admin.fasilitas.index') }}" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">list</span> Fasilitas Homestay
-                        </a>
-                    </div>
-                </div>
-                
+               <!-- Fasilitas -->
+<a href="{{ route('admin.fasilitas.index') }}" class="flex items-center w-full p-2 rounded hover:bg-gray-800 transition">
+    <span class="material-icons mr-2">apartment</span> Fasilitas Homestay
+</a>
+
+<!-- Jenis Kamar -->
+<a href="{{ route('admin.jenis-kamar.index') }}" class="flex items-center w-full p-2 rounded hover:bg-gray-800 transition">
+    <span class="material-icons mr-2">king_bed</span> Jenis Kamar
+</a>
+
                 <!-- Dropdown Pemesanan -->
                 <div class="dropdown">
                     <button class="dropdown-toggle flex items-center justify-between w-full p-2 rounded hover:bg-gray-800 transition">
@@ -112,30 +108,7 @@
                 <a href="{{ route('admin.pemesanan.index') }}" class="flex items-center p-2 rounded hover:bg-gray-800 transition">
                     <span class="material-icons mr-2">payment</span> Pemesanan
                 </a>
-                <a href="#" class="flex items-center p-2 rounded hover:bg-gray-800 transition">
-                    <span class="material-icons mr-2">rate_review</span> Ulasan & Rating
-                </a>
                 
-                <!-- Dropdown Laporan -->
-                <div class="dropdown">
-                    <button class="dropdown-toggle flex items-center justify-between w-full p-2 rounded hover:bg-gray-800 transition">
-                        <div class="flex items-center">
-                            <span class="material-icons mr-2">analytics</span> Statistik & Laporan
-                        </div>
-                        <span class="dropdown-arrow material-icons transition-transform">expand_more</span>
-                    </button>
-                    <div class="dropdown-content">
-                        <a href="#" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">show_chart</span> Statistik
-                        </a>
-                        <a href="#" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">description</span> Laporan Bulanan
-                        </a>
-                        <a href="#" class="flex items-center p-2 rounded hover:bg-gray-700 transition">
-                            <span class="material-icons mr-2">summarize</span> Laporan Tahunan
-                        </a>
-                    </div>
-                </div>
             </nav>
         </aside>
 
@@ -184,15 +157,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <a href="{{ route('pemilik.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
-                                <i class="fas fa-user mr-2 text-gray-400"></i> Profil
-                            </a>
                             <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
                                 <i class="fas fa-home mr-2 text-gray-400"></i> Halaman Utama
-                            </a>  
-                            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition">
-                                <i class="fas fa-cog mr-2 text-gray-400"></i> Pengaturan Akun
-                            </a>                   
+                            </a>                    
 
                             <!-- Logout Section -->
                             <form method="POST" action="{{ route('logout') }}">
