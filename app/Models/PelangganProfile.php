@@ -9,8 +9,9 @@ class PelangganProfile extends Model
 {
     use HasFactory;
 
-    protected $table = 'pelanggan_profiles'; // tambahkan jika nama tabel tidak standar
-    protected $primaryKey = 'pelanggan_id';
+    protected $table = 'pelanggan_profiles'; 
+    protected $primaryKey = 'id';
+    public $incrementing = true;
     public $timestamps = false;
 
     protected $fillable = [

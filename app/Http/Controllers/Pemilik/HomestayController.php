@@ -120,6 +120,4 @@ public function store(Request $request)
         return redirect()->route('pemilik.homestay.index')->with('success', 'Homestay berhasil dihapus!');
     }
 
-
-
 }

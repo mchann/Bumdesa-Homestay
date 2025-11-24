@@ -20,9 +20,28 @@
             </div>
         </div>
 
-        <div class="mb-3">
-            <strong>Total Pembayaran:</strong>
-            <h4 class="text-success mt-2">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</h4>
+        <!-- Rincian Biaya -->
+        <div class="mb-4">
+            <strong>Rincian Biaya:</strong>
+            <div class="mt-2 p-3 bg-light rounded">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal Kamar:</span>
+                    <span>Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>
+                        Biaya Layanan Sistem
+                        <br>
+                        <small class="text-muted">Pemeliharaan platform</small>
+                    </span>
+                    <span>Rp 4.500</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span class="text-success">Total Pembayaran:</span>
+                    <span class="text-success">Rp {{ number_format($pemesanan->total_harga + 4500, 0, ',', '.') }}</span>
+                </div>
+            </div>
         </div>
 
         <hr>
@@ -32,7 +51,7 @@
             <li>Buka aplikasi m-Banking BCA atau kunjungi ATM BCA.</li>
             <li>Pilih menu <strong>Transfer > Virtual Account</strong>.</li>
             <li>Masukkan nomor VA: <code>123456789012</code></li>
-            <li>Pastikan jumlah nominal: <strong class="text-success">Rp {{ number_format($pemesanan->total_harga, 0, ',', '.') }}</strong></li>
+            <li>Pastikan jumlah nominal: <strong class="text-success">Rp {{ number_format($pemesanan->total_harga + 4500, 0, ',', '.') }}</strong></li>
             <li>Konfirmasi dan selesaikan transaksi.</li>
         </ol>
 

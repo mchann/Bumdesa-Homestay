@@ -7,6 +7,8 @@ use Illuminate\Support\ServiceProvider;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Support\Facades\App;
+use App\Models\Pemesanan;
+use App\Observers\PemesananObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,22 +27,25 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Menghindari error "Specified key was too long" di MySQL
+        // Register observer untuk model Pemesanan
+        Pemesanan::observe(PemesananObserver::class);
+
+        // Hindari error key too long di MySQL
         Schema::defaultStringLength(191);
 
-        // Pastikan HTTPS di production
+        // Paksa HTTPS di production
         if ($this->app->environment('production')) {
             \Illuminate\Support\Facades\URL::forceScheme('https');
         }
 
+        // Setup scheduling jika di console
         if (App::runningInConsole()) {
-        $this->app->booted(function () {
-            $schedule = $this->app->make(Schedule::class);
+            $this->app->booted(function () {
+                $schedule = $this->app->make(Schedule::class);
 
-            $schedule->command('auto-cancel:unpaid')->everyFiveMinutes();
-
-            
-            $schedule->command('auto-complete:checkout')->dailyAt('00:10');
-        });
+                $schedule->command('auto-cancel:unpaid')->everyFiveMinutes();
+                $schedule->command('auto-complete:checkout')->dailyAt('00:10');
+            });
+        }
     }
-    }}
+}

@@ -1,7 +1,7 @@
 @extends('layout.main')
 
 @section('content')
-    {{-- Hero Section with Search --}}
+     {{-- Hero Section with Search --}}
 <div class="container-fluid hero-section" style="background-image: linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('{{ asset('img/hv-jiwa-jawa.jpg') }}'); background-size: cover; background-position: center; min-height: 400px; display: flex; align-items: center; padding: 40px 0;">
     <div class="container">
         <div class="row justify-content-center">
@@ -97,35 +97,38 @@
             </form>
         </div>
     </div>
-</div> <!-- card -->
+</div> 
             </div>
         </div>
     </div>
 </div>
 
+
     {{-- Featured Properties Section --}}
     <div class="container py-5">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold">Featured Properties</h2>
-            <a href="#" class="btn btn-outline-primary">View All</a>
+        <div class="section-header mb-4">
+            <h2 class="fw-bold mb-2">Featured Properties</h2>
+            <p class="text-muted">Curated selections for your perfect stay</p>
         </div>
         
         <div class="row g-4">
             @foreach ($homestays->take(3) as $homestay)
                 @foreach ($homestay->kamar->take(1) as $kamar)
                     <div class="col-md-4">
-                        <div class="card border-0 shadow-sm h-100">
-                            <div class="position-relative">
-                                <img class="img-fluid rounded-top" src="{{ asset('storage/'.$homestay->foto_homestay) }}" alt="{{ $homestay->nama_homestay }}" style="height: 200px; width: 100%; object-fit: cover;">
+                        <div class="card property-card border-0 shadow-sm h-100">
+                            <div class="position-relative property-image-container">
+                                <img class="img-fluid property-image" src="{{ asset('storage/'.$homestay->foto_homestay) }}" alt="{{ $homestay->nama_homestay }}">
                                 @if($kamar->diskon)
-                                    <div class="position-absolute top-0 start-0 p-2 bg-danger text-white fw-bold rounded-end">
-                                        Hemat {{ $kamar->diskon }}%
+                                    <div class="position-absolute top-0 start-0 m-2">
+                                        <span class="badge discount-badge">Save {{ $kamar->diskon }}%</span>
                                     </div>
                                 @endif
                             </div>
                             
                             <div class="card-body">
-                                <h3 class="h5 card-title mb-2">{{ $homestay->nama_homestay }}</h3>
+                                <h3 class="h6 card-title mb-2 fw-bold text-dark">{{ $homestay->nama_homestay }}</h3>
+                                <p class="card-text mb-2 text-muted small">{{ $kamar->nama_kamar }}</p>
+                                
                                 <div class="d-flex align-items-center mb-2">
                                     <span class="text-warning small me-1">
                                         @for ($i = 1; $i <= 5; $i++)
@@ -138,15 +141,18 @@
                                             @endif
                                         @endfor
                                     </span>
-                                    <span class="text-muted small">{{ $homestay->rating }} ({{ $homestay->review_count }} ulasan)</span>
+                                    <span class="text-muted small ms-1">{{ $homestay->rating }} ({{ $homestay->review_count }} reviews)</span>
                                 </div>
                                 
-                                <p class="card-text mb-3">{{ $kamar->nama_kamar }} - Kapasitas: {{ $kamar->kapasitas }} orang</p>
+                                <p class="card-text mb-3 small text-muted">Capacity: {{ $kamar->kapasitas }} person{{ $kamar->kapasitas > 1 ? 's' : '' }}</p>
                                 
                                 @if($kamar->harga)
                                     <div class="d-flex justify-content-between align-items-center">
-                                        <span class="fw-bold">Rp {{ number_format($kamar->harga, 0, ',', '.') }} / malam</span>
-                                        <a href="{{ route('homestay.details', $homestay->homestay_id) }}" class="btn btn-sm btn-primary">Book Now</a>
+                                        <div>
+                                            <span class="fw-bold text-dark">Rp {{ number_format($kamar->harga, 0, ',', '.') }}</span>
+                                            <span class="text-muted small d-block">per night</span>
+                                        </div>
+                                        <a href="{{ route('homestay.details', $homestay->homestay_id) }}" class="btn btn-primary btn-sm">Book Now</a>
                                     </div>
                                 @endif
                             </div>
@@ -157,212 +163,149 @@
         </div>
     </div>
 
-    
-
-    {{-- Main Content --}}
-    <div class="container py-5">
-        <div class="row">
-            {{-- Filters Sidebar --}}
-            <div class="col-lg-3 mb-4">
-                <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
-                    <div class="card-body">
-                        <h5 class="h6 mb-3 fw-bold">Filter by</h5>
-                        
-                        {{-- Price Range --}}
-                        <div class="mb-4">
-                            <h6 class="small fw-bold mb-2">Price per night</h6>
-                            <div class="range-slider mb-2">
-                                <input type="range" class="form-range" min="0" max="1000000" step="50000" id="priceRange">
-                            </div>
-                            <div class="d-flex justify-content-between small">
-                                <span>Rp0</span>
-                                <span>Rp1,000,000+</span>
+    {{-- Background Image Section --}}
+    <div class="container-fluid background-section py-5" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('img/dialog.jpg') }}');">
+        <div class="container">
+            <div class="row justify-content-center text-center text-white">
+                <div class="col-lg-8">
+                    <h2 class="fw-bold mb-3">Why Choose Our Homestays?</h2>
+                    <p class="mb-4 lead">Experience the perfect blend of comfort, convenience, and authentic local living</p>
+                    
+                    <div class="row g-4 mt-4">
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-shield-alt fa-2x mb-3"></i>
+                                <h5>Verified Properties</h5>
+                                <p class="small">All homestays are carefully verified for quality and safety</p>
                             </div>
                         </div>
-                        
-                        {{-- Star Rating --}}
-                        <div class="mb-4">
-                            <h6 class="small fw-bold mb-2">Guest rating</h6>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="rating5" checked>
-                                <label class="form-check-label d-flex align-items-center" for="rating5">
-                                    <div class="text-warning small me-2">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                    </div>
-                                    <span>4.5+ (Excellent)</span>
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="rating4">
-                                <label class="form-check-label d-flex align-items-center" for="rating4">
-                                    <div class="text-warning small me-2">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                    <span>3.5+ (Very Good)</span>
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="rating3">
-                                <label class="form-check-label d-flex align-items-center" for="rating3">
-                                    <div class="text-warning small me-2">
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="fas fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                        <i class="far fa-star"></i>
-                                    </div>
-                                    <span>2.5+ (Good)</span>
-                                </label>
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-headset fa-2x mb-3"></i>
+                                <h5>24/7 Support</h5>
+                                <p class="small">Round-the-clock customer support for all your needs</p>
                             </div>
                         </div>
-                        
-                        {{-- Facilities --}}
-                        <div class="mb-4">
-                            <h6 class="small fw-bold mb-2">Facilities</h6>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="wifi" checked>
-                                <label class="form-check-label" for="wifi">
-                                    <i class="fas fa-wifi text-muted me-1"></i> Free WiFi
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="pool">
-                                <label class="form-check-label" for="pool">
-                                    <i class="fas fa-swimming-pool text-muted me-1"></i> Swimming Pool
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="parking">
-                                <label class="form-check-label" for="parking">
-                                    <i class="fas fa-parking text-muted me-1"></i> Free Parking
-                                </label>
-                            </div>
-                            <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="ac">
-                                <label class="form-check-label" for="ac">
-                                    <i class="fas fa-snowflake text-muted me-1"></i> Air Conditioning
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="breakfast">
-                                <label class="form-check-label" for="breakfast">
-                                    <i class="fas fa-utensils text-muted me-1"></i> Breakfast Included
-                                </label>
+                        <div class="col-md-4">
+                            <div class="feature-item">
+                                <i class="fas fa-tag fa-2x mb-3"></i>
+                                <h5>Best Price Guarantee</h5>
+                                <p class="small">Get the best rates with our price match guarantee</p>
                             </div>
                         </div>
-                        
-                        <button class="btn btn-primary btn-sm w-100 mt-2">
-                            <i class="fas fa-filter me-1"></i> Apply Filters
-                        </button>
                     </div>
-                </div>
-            </div>
-            
-            {{-- Homestay Listings --}}
-            <div class="col-lg-9">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="mb-0">Our Listings</h1>
-                    <div class="sort-options">
-                        <select class="form-select form-select-sm" style="width: auto;">
-                            <option selected>Sort by: Recommended</option>
-                            <option>Price (lowest first)</option>
-                            <option>Price (highest first)</option>
-                            <option>Top Rated</option>
-                            <option>Distance from center</option>
-                        </select>
-                    </div>
-                </div>
-
-                <p class="small text-muted mb-4">{{ count($homestays) }} properti ditemukan</p>
-
-                <div class="row g-4">
-                    @foreach ($homestays as $homestay)
-                        @foreach ($homestay->kamar as $kamar) 
-                            <div class="col-md-6 col-lg-4">
-                                <div class="card border-0 shadow-sm h-100">
-                                    <div class="position-relative">
-                                        <img class="img-fluid rounded-top" src="{{ asset('storage/'.$homestay->foto_homestay) }}" alt="{{ $homestay->nama_homestay }}" style="height: 200px; width: 100%; object-fit: cover;">
-                                        @if($kamar->diskon)
-                                            <div class="position-absolute top-0 start-0 p-2 bg-danger text-white fw-bold rounded-end">
-                                                Hemat {{ $kamar->diskon }}%
-                                            </div>
-                                        @endif
-                                    </div>
-                                    
-                                    <div class="card-body">
-                                        <h2 class="h5 card-title mb-2">{{ $homestay->nama_homestay }}</h2>
-                                        <h3 class="h6 card-subtitle mb-2 text-muted">{{ $kamar->nama_kamar }}</h3>
-                                        
-                                        <div class="d-flex align-items-center mb-2">
-                                            <span class="text-warning small me-1">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    @if ($i <= floor($homestay->rating))
-                                                        <i class="fas fa-star"></i>
-                                                    @elseif ($i == ceil($homestay->rating) && $homestay->rating % 1 != 0)
-                                                        <i class="fas fa-star-half-alt"></i>
-                                                    @else
-                                                        <i class="far fa-star"></i>
-                                                    @endif
-                                                @endfor
-                                            </span>
-                                            <span class="text-muted small">{{ $homestay->rating }} ({{ $homestay->review_count }} ulasan)</span>
-                                        </div>
-
-                                        <p class="card-text mb-3">Kapasitas: {{ $kamar->kapasitas }} orang</p>
-                                        
-                                        @if($kamar->harga)
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="fw-bold">Rp {{ number_format($kamar->harga, 0, ',', '.') }} / malam</span>
-                                                <a href="{{ route('homestay.details', $homestay->homestay_id) }}" class="btn btn-sm btn-primary">Details</a>
-                                            </div>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
-                        @endforeach
-                    @endforeach
-                </div>
-                
-                {{-- Pagination --}}
-                <div class="d-flex justify-content-center mt-4">
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#" aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </nav>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- Client Feedback Section --}}
+    {{-- Main Listings Section --}}
+    <div class="container py-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="h3 fw-bold mb-1">Available Homestays</h1>
+                <p class="text-muted small">{{ count($homestays) }} properties found in your search area</p>
+            </div>
+            <div class="sort-options">
+                <select class="form-select form-select-sm border-0 shadow-sm">
+                    <option selected>Sort by: Recommended</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Highest Rated</option>
+                    <option>Most Reviewed</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            @foreach ($homestays as $homestay)
+                @foreach ($homestay->kamar as $kamar) 
+                    <div class="col-md-6 col-lg-4">
+                        <div class="card property-card border-0 shadow-sm h-100">
+                            <div class="position-relative property-image-container">
+                                <img class="img-fluid property-image" src="{{ asset('storage/'.$homestay->foto_homestay) }}" alt="{{ $homestay->nama_homestay }}">
+                                @if($kamar->diskon)
+                                    <div class="position-absolute top-0 start-0 m-2">
+                                        <span class="badge discount-badge">Save {{ $kamar->diskon }}%</span>
+                                    </div>
+                                @endif
+                            </div>
+                            
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <h2 class="h6 card-title mb-0 fw-bold text-dark">{{ $homestay->nama_homestay }}</h2>
+                                    <div class="property-rating text-end">
+                                        <span class="text-warning small">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                @if ($i <= floor($homestay->rating))
+                                                    <i class="fas fa-star"></i>
+                                                @elseif ($i == ceil($homestay->rating) && $homestay->rating % 1 != 0)
+                                                    <i class="fas fa-star-half-alt"></i>
+                                                @else
+                                                    <i class="far fa-star"></i>
+                                                @endif
+                                            @endfor
+                                        </span>
+                                        <div class="text-muted small">{{ $homestay->rating }} ({{ $homestay->review_count }})</div>
+                                    </div>
+                                </div>
+
+                                <h3 class="h6 card-subtitle mb-2 text-muted">{{ $kamar->nama_kamar }}</h3>
+                                
+                                <p class="card-text mb-3 small text-muted">Capacity: {{ $kamar->kapasitas }} person{{ $kamar->kapasitas > 1 ? 's' : '' }}</p>
+                                
+                                @if($kamar->harga)
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <span class="fw-bold text-dark">Rp {{ number_format($kamar->harga, 0, ',', '.') }}</span>
+                                            <span class="text-muted small d-block">per night</span>
+                                            @if($kamar->diskon)
+                                                <span class="text-success small">Including taxes & fees</span>
+                                            @endif
+                                        </div>
+                                        <a href="{{ route('homestay.details', $homestay->homestay_id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @endforeach
+        </div>
+        
+        {{-- Pagination --}}
+        <div class="d-flex justify-content-center mt-5">
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    {{-- Testimonials Section --}}
     <div class="bg-light py-5">
         <div class="container">
-            <h2 class="text-center mb-5 fw-bold">Client Feedback</h2>
+            <div class="text-center mb-5">
+                <h2 class="fw-bold mb-2">What Our Guests Say</h2>
+                <p class="text-muted">Real experiences from travelers like you</p>
+            </div>
             
             <div class="row g-4">
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card border-0 h-100">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <span class="text-warning">
@@ -373,10 +316,10 @@
                                     <i class="fas fa-star"></i>
                                 </span>
                             </div>
-                            <p class="card-text mb-4">"Pelayanan sangat memuaskan! Homestaynya bersih dan nyaman. Akan kembali lagi."</p>
+                            <p class="card-text mb-4">"Excellent service! The homestay was clean and comfortable. Will definitely return."</p>
                             <div class="d-flex align-items-center justify-content-center">
-                                <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Client" width="50" height="50">
-                                <div>
+                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Testimonial 1">
+                                <div class="text-start">
                                     <h6 class="mb-0">John Doe</h6>
                                     <small class="text-muted">Traveler</small>
                                 </div>
@@ -386,7 +329,7 @@
                 </div>
                 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card border-0 h-100">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <span class="text-warning">
@@ -397,10 +340,10 @@
                                     <i class="fas fa-star-half-alt"></i>
                                 </span>
                             </div>
-                            <p class="card-text mb-4">"Lokasi strategis dekat dengan pusat kota. Fasilitas lengkap dan staff sangat ramah."</p>
+                            <p class="card-text mb-4">"Strategic location close to the city center. Complete facilities and very friendly staff."</p>
                             <div class="d-flex align-items-center justify-content-center">
-                                <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Client" width="50" height="50">
-                                <div>
+                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Testimonial 2">
+                                <div class="text-start">
                                     <h6 class="mb-0">Jane Smith</h6>
                                     <small class="text-muted">Family Traveler</small>
                                 </div>
@@ -410,7 +353,7 @@
                 </div>
                 
                 <div class="col-md-4">
-                    <div class="card border-0 shadow-sm h-100">
+                    <div class="card border-0 h-100">
                         <div class="card-body text-center p-4">
                             <div class="mb-3">
                                 <span class="text-warning">
@@ -421,10 +364,10 @@
                                     <i class="far fa-star"></i>
                                 </span>
                             </div>
-                            <p class="card-text mb-4">"Harga sangat terjangkau untuk kualitas yang diberikan. Sangat recommended untuk backpacker."</p>
+                            <p class="card-text mb-4">"Very affordable price for the quality provided. Highly recommended for backpackers."</p>
                             <div class="d-flex align-items-center justify-content-center">
-                                <img src="https://via.placeholder.com/50" class="rounded-circle me-3" alt="Client" width="50" height="50">
-                                <div>
+                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Testimonial 3">
+                                <div class="text-start">
                                     <h6 class="mb-0">Robert Johnson</h6>
                                     <small class="text-muted">Backpacker</small>
                                 </div>
@@ -436,17 +379,31 @@
         </div>
     </div>
 
+    {{-- Newsletter Section --}}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <h2 class="fw-bold mb-3">Stay Updated</h2>
+                <p class="text-muted mb-4">Subscribe to our newsletter for exclusive deals and travel tips</p>
+                <div class="input-group mb-3">
+                    <input type="email" class="form-control" placeholder="Your email address">
+                    <button class="btn btn-primary px-4" type="button">Subscribe</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     {{-- Guest Modal --}}
     <div class="modal fade" id="guestModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Pilih Tamu dan Kamar</h5>
+                    <h5 class="modal-title">Select Guests and Rooms</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label class="form-label">Dewasa</label>
+                        <label class="form-label">Adults</label>
                         <div class="input-group">
                             <button class="btn btn-outline-secondary" type="button" id="adult-minus">-</button>
                             <input type="number" class="form-control text-center" value="2" min="1" id="adult-count">
@@ -454,7 +411,7 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Anak-anak (2-12 tahun)</label>
+                        <label class="form-label">Children (2-12 years)</label>
                         <div class="input-group">
                             <button class="btn btn-outline-secondary" type="button" id="child-minus">-</button>
                             <input type="number" class="form-control text-center" value="0" min="0" id="child-count">
@@ -462,7 +419,7 @@
                         </div>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Kamar</label>
+                        <label class="form-label">Rooms</label>
                         <div class="input-group">
                             <button class="btn btn-outline-secondary" type="button" id="room-minus">-</button>
                             <input type="number" class="form-control text-center" value="1" min="1" id="room-count">
@@ -471,7 +428,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="save-guest">Simpan</button>
+                    <button type="button" class="btn btn-primary" id="save-guest">Save</button>
                 </div>
             </div>
         </div>
@@ -480,86 +437,241 @@
 
 @push('styles')
 <style>
+    /* Hero Section */
     .hero-section {
         background-size: cover;
         background-position: center;
-        padding: 100px 0;
+        min-height: 400px;
+        display: flex;
+        align-items: center;
+        padding: 60px 0;
+    }
+
+    /* Search Card */
+    .search-card {
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+    }
+
+    .search-input-group {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .search-input-group:focus-within {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
+    }
+
+    .search-input-group .form-control {
+        border: none;
+        box-shadow: none;
+    }
+
+    .search-input-group .input-group-text {
+        border: none;
+        background: white;
+    }
+
+    .search-btn {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+    }
+
+    .guest-select-btn {
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        background: white;
+        transition: all 0.3s ease;
+    }
+
+    .guest-select-btn:hover {
+        border-color: #0d6efd;
+    }
+
+    /* Property Cards */
+    .property-card {
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+    }
+
+    .property-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    .property-image-container {
+        overflow: hidden;
+    }
+
+    .property-image {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .property-card:hover .property-image {
+        transform: scale(1.05);
+    }
+
+    .discount-badge {
+        background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+        color: white;
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Background Section */
+    .background-section {
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
         position: relative;
     }
 
-    .hero-section::before {
+    .background-section::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.4);
+        background: rgba(0, 0, 0, 0.6);
     }
 
-    .card {
+    .background-section .container {
+        position: relative;
+        z-index: 2;
+    }
+
+    .feature-item {
+        padding: 2rem 1rem;
         border-radius: 12px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
     }
 
-    .card:hover {
+    .feature-item:hover {
+        background: rgba(255, 255, 255, 0.15);
         transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    /* Testimonials */
+    .testimonial-card {
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+
+    /* Pagination */
+    .pagination .page-link {
+        border-radius: 8px;
+        margin: 0 2px;
+        border: 1px solid #dee2e6;
+        color: #495057;
+    }
+
+    .pagination .page-item.active .page-link {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 300px;
+            padding: 40px 0;
+        }
+        
+        .search-card .row {
+            flex-direction: column;
+        }
+        
+        .search-card .col-md-2,
+        .search-card .col-md-4 {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .background-section {
+            background-attachment: scroll;
+        }
+    }
+
+    /* Button Styles */
+    .btn-primary {
+        background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+        border: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
     }
 
     .btn-outline-primary {
-        border-width: 2px;
-        font-weight: 500;
+        border-radius: 8px;
+        transition: all 0.3s ease;
     }
 
-    .text-warning {
-        color: #ffc107 !important;
+    .btn-outline-primary:hover {
+        transform: translateY(-1px);
     }
 
-    .range-slider {
-        padding: 0.5rem 0;
+    /* Text Colors */
+    .text-dark {
+        color: #2c3e50 !important;
     }
 
-    .form-range::-webkit-slider-thumb {
-        background: #0d6efd;
+    .text-muted {
+        color: #6c757d !important;
     }
 
-    .form-range::-moz-range-thumb {
-        background: #0d6efd;
+    /* Card Body Padding */
+    .card-body {
+        padding: 1.25rem;
     }
 
-    .form-range::-ms-thumb {
-        background: #0d6efd;
+    /* Section Headers */
+    .section-header h2 {
+        color: #2c3e50;
+        font-weight: 600;
     }
 
-    /* New styles for featured section */
-    .featured-section {
-        background-color: #f8f9fa;
+    /* Form Controls */
+    .form-control:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
     }
 
-    .client-feedback {
-        background-color: #f8f9fa;
-    }
-
-    .client-img {
-        width: 50px;
-        height: 50px;
-        object-fit: cover;
+    .form-select:focus {
+        border-color: #0d6efd;
+        box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
     }
 </style>
 @endpush
 
 @push('scripts')
 <script>
-    // Price range slider functionality
     document.addEventListener('DOMContentLoaded', function() {
-        const priceRange = document.getElementById('priceRange');
-        if (priceRange) {
-            priceRange.addEventListener('input', function() {
-                console.log('Price range selected:', this.value);
-            });
-        }
-        
         // Guest modal functionality
         const adultPlus = document.getElementById('adult-plus');
         const adultMinus = document.getElementById('adult-minus');
@@ -618,14 +730,47 @@
                 const children = childCount.value;
                 const rooms = roomCount.value;
                 
-                let summary = `${adults} Dewasa`;
-                if (children > 0) summary += `, ${children} Anak`;
-                summary += `, ${rooms} Kamar`;
+                let summary = `${adults} Adult${adults > 1 ? 's' : ''}`;
+                if (children > 0) summary += `, ${children} Child${children > 1 ? 'ren' : ''}`;
+                summary += `, ${rooms} Room${rooms > 1 ? 's' : ''}`;
                 
                 guestSummary.textContent = summary;
                 $('#guestModal').modal('hide');
             });
         }
+        
+        // Date calculation for check-in and check-out
+        const checkinDate = document.getElementById('checkin-date');
+        const checkoutDate = document.getElementById('checkout-date');
+        
+        if (checkinDate && checkoutDate) {
+            checkinDate.addEventListener('change', function() {
+                const checkin = new Date(this.value);
+                const checkout = new Date(checkin);
+                checkout.setDate(checkin.getDate() + 1);
+                checkoutDate.value = checkout.toISOString().split('T')[0];
+            });
+        }
+
+        // Add smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add loading animation for images
+        const images = document.querySelectorAll('img');
+        images.forEach(img => {
+            img.addEventListener('load', function() {
+                this.style.opacity = '1';
+            });
+            img.style.opacity = '0';
+            img.style.transition = 'opacity 0.3s ease';
+        });
     });
 </script>
 @endpush

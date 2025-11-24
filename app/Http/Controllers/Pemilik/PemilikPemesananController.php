@@ -23,27 +23,27 @@ class PemilikPemesananController extends Controller
     ];
 
     /**
+     * Ambil homestay milik pemilik login
+     */
+    private function getHomestay(): Homestay
+    {
+        $user = Auth::user();
+        $profile = PemilikProfile::where('user_id', $user->id)->firstOrFail();
+
+        return Homestay::where('pemilik_id', $profile->pemilik_id)->firstOrFail();
+    }
+
+    /**
      * Display a listing of the reservations.
      */
     public function index(Request $request)
     {
-        $user = Auth::user();
+        $homestay = $this->getHomestay();
         $status = $request->input('status', 'semua');
-
-        // Get owner profile or redirect if not found
-        $profile = PemilikProfile::where('user_id', $user->id)->firstOrFail();
-
-        // Get homestay or redirect if not found
-        $homestay = Homestay::where('pemilik_id', $profile->pemilik_id)->firstOrFail();
 
         // Build the base query
         $query = Pemesanan::where('homestay_id', $homestay->homestay_id)
-            ->with([
-                'pelanggan',
-                'kamar.homestay' => function($query) use ($profile) {
-                    $query->where('pemilik_id', $profile->pemilik_id);
-                }
-            ])
+            ->with(['pelanggan', 'kamar.homestay'])
             ->latest();
 
         // Apply status filter if not 'semua'
@@ -77,14 +77,11 @@ class PemilikPemesananController extends Controller
      */
     public function show($id)
     {
-        $user = Auth::user();
-        $profile = PemilikProfile::where('user_id', $user->id)->firstOrFail();
+        $homestay = $this->getHomestay();
 
         $pemesanan = Pemesanan::with(['pelanggan', 'kamar.homestay'])
+            ->where('homestay_id', $homestay->homestay_id)
             ->findOrFail($id);
-
-        // Authorization check
-        $this->authorizePemilik($pemesanan, $profile);
 
         return view('pemilik.pemesanan.show', compact('pemesanan'));
     }
@@ -101,12 +98,10 @@ class PemilikPemesananController extends Controller
             ]
         ]);
 
-        $user = Auth::user();
-        $profile = PemilikProfile::where('user_id', $user->id)->firstOrFail();
-        $pemesanan = Pemesanan::findOrFail($id);
+        $homestay = $this->getHomestay();
 
-        // Authorization check
-        $this->authorizePemilik($pemesanan, $profile);
+        $pemesanan = Pemesanan::where('homestay_id', $homestay->homestay_id)
+            ->findOrFail($id);
 
         // Additional validation for status transitions
         $this->validateStatusTransition($pemesanan->status, $validated['status']);
@@ -139,16 +134,6 @@ class PemilikPemesananController extends Controller
             if (!in_array($newStatus, $allowedTransitions[$currentStatus])) {
                 abort(422, 'Transisi status tidak valid');
             }
-        }
-    }
-
-    /**
-     * Authorization check for owner
-     */
-    protected function authorizePemilik(Pemesanan $pemesanan, PemilikProfile $profile): void
-    {
-        if ($pemesanan->kamar->homestay->pemilik_id !== $profile->pemilik_id) {
-            abort(403, 'Anda tidak diizinkan mengakses pemesanan ini');
         }
     }
 }

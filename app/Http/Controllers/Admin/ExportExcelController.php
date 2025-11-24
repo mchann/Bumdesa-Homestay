@@ -13,7 +13,11 @@ class ExportExcelController extends Controller
     {
         $tanggalAwal = $request->input('tanggal_awal');
         $tanggalAkhir = $request->input('tanggal_akhir');
+        // Ambil filter homestay dan status dari request
+        $homestayId = $request->input('homestay_id'); 
+        $status = $request->input('status'); // Jika perlu filter status di Excel (saat ini PemesananExport tidak menggunakannya, tapi tetap dibawa)
 
-        return Excel::download(new PemesananExport($tanggalAwal, $tanggalAkhir), 'data_pemesanan.xlsx');
+        // Panggil PemesananExport dan teruskan homestayId
+        return Excel::download(new PemesananExport($tanggalAwal, $tanggalAkhir, $homestayId), 'data_pemesanan.xlsx');
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Homestay;
 use Illuminate\Http\Request;
+use App\Models\UmkmProduct;
 
 class PostController extends Controller
 {
@@ -48,11 +49,54 @@ class PostController extends Controller
         return view('page.destinations.sendang', ['title' => 'Sendang Seruni']);
     }
 
-    // Menampilkan halaman UMKM
-    public function show_umkm()
+    // Menampilkan halaman UMKM dengan filter dan pencarian
+    public function show_umkm(Request $request)
     {
-        return view('page.umkm', ['title' => 'UMKM']);
+        $query = UmkmProduct::active();
+
+        // Filter kategori
+        if ($request->has('kategori') && $request->kategori != 'semua') {
+            $query->byCategory($request->kategori);
+        }
+
+        // Pencarian
+        if ($request->has('search') && $request->search != '') {
+            $query->search($request->search);
+        }
+
+        $products = $query->latest()->get();
+        $categories = UmkmProduct::active()->distinct()->pluck('kategori');
+
+        return view('page.umkm', [
+            'title' => 'UMKM',
+            'products' => $products,
+            'categories' => $categories,
+            'selectedCategory' => $request->kategori ?? 'semua',
+            'searchQuery' => $request->search ?? ''
+        ]);
     }
+
+    // Menampilkan detail produk UMKM
+    public function show_umkm_detail($slug)
+    {
+        $product = UmkmProduct::where('slug', $slug)
+            ->where('status', 'active')
+            ->firstOrFail();
+
+        // Ambil produk terkait dari kategori yang sama
+        $relatedProducts = UmkmProduct::where('kategori', $product->kategori)
+            ->where('id', '!=', $product->id)
+            ->where('status', 'active')
+            ->limit(4)
+            ->get();
+
+        return view('page.detail_umkm', [
+            'title' => $product->nama_produk . ' - UMKM',
+            'product' => $product,
+            'relatedProducts' => $relatedProducts
+        ]);
+    }
+
 
     // Menampilkan daftar Homestays dengan pencarian
     public function show_homestays(Request $request)

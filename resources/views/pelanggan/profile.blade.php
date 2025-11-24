@@ -22,24 +22,9 @@
                             <span>My Account</span>
                             <i class="fas fa-chevron-right ms-auto text-muted"></i>
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center">
-                            <i class="fas fa-credit-card me-3 text-info"></i>
-                            <span>My Card</span>
-                            <i class="fas fa-chevron-right ms-auto text-muted"></i>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center">
-                            <i class="fas fa-shopping-cart me-3 text-success"></i>
-                            <span>Purchase List</span>
-                            <i class="fas fa-chevron-right ms-auto text-muted"></i>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center">
+                        <a href="{{ route('pelanggan.profile.update') }}" class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center">
                             <i class="fas fa-box me-3 text-warning"></i>
                             <span>My Order</span>
-                            <i class="fas fa-chevron-right ms-auto text-muted"></i>
-                        </a>
-                        <a href="#" class="list-group-item list-group-item-action border-0 py-3 px-4 d-flex align-items-center">
-                            <i class="fas fa-exchange-alt me-3 text-secondary"></i>
-                            <span>Refund</span>
                             <i class="fas fa-chevron-right ms-auto text-muted"></i>
                         </a>
                         <a href="{{ route('logout') }}" 

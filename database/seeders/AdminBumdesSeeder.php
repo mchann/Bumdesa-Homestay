@@ -11,13 +11,13 @@ class AdminBumdesSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@bumdes.com'], // Cek dulu biar gak dobel
-            [
-                'name' => 'Admin Bumdes',
-                'email' => 'maskikit@gmail.com',
-                'password' => Hash::make('12345678'), // Ganti nanti di real project
-                'role' => 'admin', // Sesuai yang lo pakai
-            ]
-        );
+    ['email' => 'bumdesaijen@gmail.com'], // kondisi
+    [
+        'name' => 'Admin Bumdes',
+        'password' => Hash::make('#Tamansari25pw'),
+        'role' => 'admin',
+    ]
+);
+
     }
 }
