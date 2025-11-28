@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* Dropdown styles */
         .dropdown-content {
             display: none;
             padding-left: 1rem;
@@ -94,8 +95,8 @@
         #dropdownMenu {
             position: absolute;
             right: 0;
-            top: 100%; /* Posisikan tepat di bawah container user */
-            margin-top: 0.5rem; /* Sedikit jarak */
+            top: 100%;
+            margin-top: 0.5rem;
             z-index: 1000;
         }
 
@@ -153,16 +154,61 @@
         }
 
         @media (max-width: 640px) {
-            .header-content {
-                flex-direction: column;
-                gap: 1rem;
-                align-items: flex-start;
-            }
-            
             .user-section {
                 width: 100%;
                 justify-content: space-between;
             }
+        }
+
+        /* PERBAIKAN: Tambahan untuk memastikan dropdown user terlihat dengan baik di mobile */
+        @media (max-width: 768px) {
+            .user-info-desktop {
+                display: none;
+            }
+            
+            .user-info-mobile {
+                display: block;
+            }
+        }
+
+        /* PERBAIKAN: Pastikan konten utama tidak overflow */
+        main {
+            min-height: calc(100vh - 80px);
+        }
+
+        /* PERBAIKAN UTAMA: Header alignment - POSISI DI SAMPING */
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+
+        /* PERBAIKAN: Memastikan judul rata kiri */
+        .welcome-title {
+            margin: 0;
+            padding: 0;
+            text-align: left;
+        }
+
+        /* PERBAIKAN: Pastikan tidak ada margin yang mendorong ke tengah */
+        .header-left,
+        .header-right {
+            margin: 0;
         }
     </style>
 </head>
@@ -336,18 +382,19 @@
 
         <!-- Main Content -->
         <div class="flex-1 flex flex-col min-w-0">
-            <!-- Header -->
-            <header class="bg-white shadow-md px-4 sm:px-6 py-4 relative">
-                <div class="header-content flex justify-between items-center">
-                    <div class="flex items-center space-x-4">
-                        <!-- Mobile Menu Button -->
+            <!-- Header - PERBAIKAN UTAMA DI SINI -->
+            <header class="bg-white shadow-md px-4 sm:px-6 py-4">
+                <div class="header-content">
+                    <!-- Bagian Kiri - Tombol Menu dan Judul -->
+                    <div class="header-left">
                         <button class="mobile-menu-btn text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition" id="mobileMenuButton">
                             <i class="fas fa-bars text-xl"></i>
                         </button>
-                        <h1 class="text-lg sm:text-xl font-semibold text-gray-800">Selamat Datang, Pemilik</h1>
+                        <h1 class="welcome-title text-lg sm:text-xl font-semibold text-gray-800">Selamat Datang, Pemilik</h1>
                     </div>
                     
-                    <div class="user-section flex items-center space-x-4">
+                    <!-- Bagian Kanan - Notifikasi dan User Info -->
+                    <div class="header-right">
                         <!-- Notification Icon -->
                         <div class="relative">
                             <button class="text-gray-600 p-2 rounded-lg hover:bg-gray-100 transition">
@@ -464,7 +511,7 @@
                 });
             }
             
-            // Sidebar dropdown functionality - PERBAIKAN UTAMA
+            // PERBAIKAN UTAMA: Sidebar dropdown functionality
             const dropdownToggles = document.querySelectorAll('.dropdown-toggle');
             
             dropdownToggles.forEach(toggle => {
@@ -486,12 +533,14 @@
                         
                         // Toggle current dropdown
                         dropdown.classList.toggle('active');
+                    } else {
+                        // Untuk mobile, toggle dropdown
+                        dropdown.classList.toggle('active');
                     }
-                    // Untuk mobile, biarkan perilaku default (expand/collapse)
                 });
             });
 
-            // Close dropdowns when clicking outside (desktop only)
+            // PERBAIKAN: Close dropdowns when clicking outside (desktop only)
             document.addEventListener('click', function(e) {
                 if (window.innerWidth >= 768) {
                     if (!e.target.closest('.dropdown')) {
@@ -514,7 +563,7 @@
             });
         });
 
-        // Prevent body scroll when mobile sidebar is open
+        // PERBAIKAN: Prevent body scroll when mobile sidebar is open
         document.addEventListener('touchmove', function(e) {
             if (document.getElementById('mobileSidebar').classList.contains('open')) {
                 e.preventDefault();

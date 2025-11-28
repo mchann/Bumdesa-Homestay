@@ -636,23 +636,37 @@
             }
         }
         
-        // Order Product via WhatsApp
-        function orderProduct() {
-            const quantity = document.getElementById('quantity').value;
-            const productName = "{{ $product->nama_produk }}";
-            const price = "{{ $product->harga }}";
-            const phoneNumber = "{{ $product->no_telepon_owner }}";
-            
-            const message = `Halo, saya ingin memesan produk:\n\n` +
-                          `📦 *${productName}*\n` +
-                          `💰 Harga: Rp ${parseInt(price).toLocaleString('id-ID')}\n` +
-                          `📦 Jumlah: ${quantity} unit\n` +
-                          `💰 Total: Rp ${(parseInt(price) * parseInt(quantity)).toLocaleString('id-ID')}\n\n` +
-                          `Apakah produk ini tersedia?`;
-            
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
+        // Order Product via WhatsApp dengan Profile Pelanggan
+function orderProduct() {
+    const quantity = document.getElementById('quantity').value;
+    const productName = "{{ $product->nama_produk }}";
+    const price = "{{ $product->harga }}";
+    const phoneNumber = "{{ $product->no_telepon_owner }}";
+    
+    // Ambil data profile pelanggan dari PHP
+    const userProfile = @json(Auth::user()->pelangganProfile ?? null);
+    
+    let customerInfo = '';
+    if (userProfile) {
+        customerInfo = `\n👤 *Informasi Pemesan:*\n` +
+                      `📛 Nama: ${userProfile.nama_lengkap}\n` +
+                      `📞 Telepon: ${userProfile.nomor_telepon}\n` +
+                      `🌍 Kewarganegaraan: ${userProfile.kewarganegaraan}\n`;
+    } else {
+        customerInfo = `\n⚠️ *Informasi Pemesan:* Profil belum lengkap\n`;
+    }
+    
+    const message = `Halo, saya ingin memesan produk:\n\n` +
+                  `📦 *${productName}*\n` +
+                  `💰 Harga: Rp ${parseInt(price).toLocaleString('id-ID')}\n` +
+                  `📦 Jumlah: ${quantity} unit\n` +
+                  `💰 Total: Rp ${(parseInt(price) * parseInt(quantity)).toLocaleString('id-ID')}\n` +
+                  customerInfo +
+                  `\nApakah produk ini tersedia?`;
+    
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+}
         
         // Add to Cart (placeholder function)
         function addToCart() {

@@ -217,61 +217,88 @@
             </div>
         </div>
 
-        <div class="row g-4">
-            @foreach ($homestays as $homestay)
-                @foreach ($homestay->kamar as $kamar) 
-                    <div class="col-md-6 col-lg-4">
-                        <div class="card property-card border-0 shadow-sm h-100">
-                            <div class="position-relative property-image-container">
-                                <img class="img-fluid property-image" src="{{ asset('storage/'.$homestay->foto_homestay) }}" alt="{{ $homestay->nama_homestay }}">
-                                @if($kamar->diskon)
-                                    <div class="position-absolute top-0 start-0 m-2">
-                                        <span class="badge discount-badge">Save {{ $kamar->diskon }}%</span>
-                                    </div>
-                                @endif
+       <div class="row g-4">
+    @foreach ($homestays as $homestay)
+        @foreach ($homestay->kamar as $kamar) 
+            <div class="col-md-6 col-lg-4">
+                <div class="card property-card border-0 shadow-sm h-100">
+                    <div class="position-relative property-image-container">
+                        <img class="img-fluid property-image" src="{{ asset('storage/'.$homestay->foto_homestay) }}" alt="{{ $homestay->nama_homestay }}">
+                        @if($kamar->diskon)
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge discount-badge">Save {{ $kamar->diskon }}%</span>
                             </div>
-                            
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-start mb-2">
-                                    <h2 class="h6 card-title mb-0 fw-bold text-dark">{{ $homestay->nama_homestay }}</h2>
-                                    <div class="property-rating text-end">
-                                        <span class="text-warning small">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                @if ($i <= floor($homestay->rating))
-                                                    <i class="fas fa-star"></i>
-                                                @elseif ($i == ceil($homestay->rating) && $homestay->rating % 1 != 0)
-                                                    <i class="fas fa-star-half-alt"></i>
-                                                @else
-                                                    <i class="far fa-star"></i>
-                                                @endif
-                                            @endfor
-                                        </span>
-                                        <div class="text-muted small">{{ $homestay->rating }} ({{ $homestay->review_count }})</div>
-                                    </div>
+                        @endif
+                    </div>
+                    
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h2 class="h6 card-title mb-0 fw-bold text-dark">{{ $homestay->nama_homestay }}</h2>
+                            <div class="property-rating text-end">
+                                @php
+                                    // Ambil data rating dari ulasan real
+                                    $reviews = $homestay->ulasans()
+                                        ->where('disembunyikan', false)
+                                        ->get();
+                                    
+                                    $averageRating = $reviews->count() > 0 ? $reviews->avg('rating') : 0;
+                                    $reviewCount = $reviews->count();
+                                @endphp
+                                
+                                <span class="text-warning small">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        @if ($i <= floor($averageRating))
+                                            <i class="fas fa-star"></i>
+                                        @elseif ($i == ceil($averageRating) && $averageRating % 1 != 0)
+                                            <i class="fas fa-star-half-alt"></i>
+                                        @else
+                                            <i class="far fa-star"></i>
+                                        @endif
+                                    @endfor
+                                </span>
+                                <div class="text-muted small">
+                                    @if($reviewCount > 0)
+                                        {{ number_format($averageRating, 1) }} ({{ $reviewCount }})
+                                    @else
+                                        No reviews
+                                    @endif
                                 </div>
-
-                                <h3 class="h6 card-subtitle mb-2 text-muted">{{ $kamar->nama_kamar }}</h3>
-                                
-                                <p class="card-text mb-3 small text-muted">Capacity: {{ $kamar->kapasitas }} person{{ $kamar->kapasitas > 1 ? 's' : '' }}</p>
-                                
-                                @if($kamar->harga)
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <span class="fw-bold text-dark">Rp {{ number_format($kamar->harga, 0, ',', '.') }}</span>
-                                            <span class="text-muted small d-block">per night</span>
-                                            @if($kamar->diskon)
-                                                <span class="text-success small">Including taxes & fees</span>
-                                            @endif
-                                        </div>
-                                        <a href="{{ route('homestay.details', $homestay->homestay_id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
-                                    </div>
-                                @endif
                             </div>
                         </div>
+
+                        <h3 class="h6 card-subtitle mb-2 text-muted">{{ $kamar->nama_kamar }}</h3>
+                        
+                        <p class="card-text mb-3 small text-muted">Capacity: {{ $kamar->kapasitas }} person{{ $kamar->kapasitas > 1 ? 's' : '' }}</p>
+                        
+                        @if($kamar->harga)
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    @if($kamar->diskon)
+                                        <div class="d-flex align-items-center gap-2 mb-1">
+                                            <span class="text-danger text-decoration-line-through small">
+                                                Rp {{ number_format($kamar->harga, 0, ',', '.') }}
+                                            </span>
+                                            <span class="fw-bold text-dark">
+                                                Rp {{ number_format($kamar->harga - ($kamar->harga * $kamar->diskon / 100), 0, ',', '.') }}
+                                            </span>
+                                        </div>
+                                    @else
+                                        <span class="fw-bold text-dark">Rp {{ number_format($kamar->harga, 0, ',', '.') }}</span>
+                                    @endif
+                                    <span class="text-muted small d-block">per night</span>
+                                    @if($kamar->diskon)
+                                        <span class="text-success small">Including taxes & fees</span>
+                                    @endif
+                                </div>
+                                <a href="{{ route('homestay.details', $homestay->homestay_id) }}" class="btn btn-outline-primary btn-sm">View Details</a>
+                            </div>
+                        @endif
                     </div>
-                @endforeach
-            @endforeach
-        </div>
+                </div>
+            </div>
+        @endforeach
+    @endforeach
+</div>
         
         {{-- Pagination --}}
         <div class="d-flex justify-content-center mt-5">
@@ -295,89 +322,165 @@
         </div>
     </div>
 
-    {{-- Testimonials Section --}}
-    <div class="bg-light py-5">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold mb-2">What Our Guests Say</h2>
-                <p class="text-muted">Real experiences from travelers like you</p>
+   {{-- Testimonials Section --}}
+@php
+    // Ambil data ulasan terbaru dari database sesuai dengan controller Ulasan
+    $testimonials = App\Models\Ulasan::with(['pelanggan', 'homestay'])
+        ->whereHas('pemesanan', function($query) {
+            $query->where('status', 'selesai'); // Hanya ulasan dari pemesanan yang selesai
+        })
+        ->whereNotNull('komentar')
+        ->where('komentar', '!=', '')
+        ->orderBy('created_at', 'desc')
+        ->limit(3)
+        ->get();
+@endphp
+
+<div class="bg-light py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="fw-bold mb-2">What Our Guests Say</h2>
+            <p class="text-muted">Real experiences from travelers like you</p>
+        </div>
+        
+        <div class="row g-4">
+            @forelse($testimonials as $testimonial)
+            <div class="col-md-4">
+                <div class="card border-0 h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <span class="text-warning">
+                                {{-- RATING DARI CONTROLLER ULASAN --}}
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $testimonial->rating)
+                                        <i class="fas fa-star"></i>
+                                    @else
+                                        <i class="far fa-star"></i>
+                                    @endif
+                                @endfor
+                                <small class="text-muted ms-1">({{ $testimonial->rating }}/5)</small>
+                            </span>
+                        </div>
+                        <p class="card-text mb-4">
+                            "{{ $testimonial->komentar }}"
+                        </p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            {{-- Ganti gambar dengan icon --}}
+                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div class="text-start">
+                                <h6 class="mb-0">{{ $testimonial->pelanggan->name ?? 'Guest' }}</h6>
+                                <small class="text-muted">
+                                    @if($testimonial->homestay)
+                                        Stayed at {{ $testimonial->homestay->nama_homestay }}
+                                    @else
+                                        Traveler
+                                    @endif
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @empty
+            {{-- Jika tidak ada ulasan di database, tampilkan data default --}}
+            <div class="col-md-4">
+                <div class="card border-0 h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <span class="text-warning">
+                                {{-- RATING DEFAULT --}}
+                                @for($i = 1; $i <= 5; $i++)
+                                    <i class="fas fa-star"></i>
+                                @endfor
+                                <small class="text-muted ms-1">(5/5)</small>
+                            </span>
+                        </div>
+                        <p class="card-text mb-4">"Excellent service! The homestay was clean and comfortable. Will definitely return."</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="bg-success rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div class="text-start">
+                                <h6 class="mb-0">John Doe</h6>
+                                <small class="text-muted">Traveler</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             
-            <div class="row g-4">
-                <div class="col-md-4">
-                    <div class="card border-0 h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="mb-3">
-                                <span class="text-warning">
+            <div class="col-md-4">
+                <div class="card border-0 h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <span class="text-warning">
+                                {{-- RATING DEFAULT --}}
+                                @for($i = 1; $i <= 4; $i++)
                                     <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                </span>
-                            </div>
-                            <p class="card-text mb-4">"Excellent service! The homestay was clean and comfortable. Will definitely return."</p>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Testimonial 1">
-                                <div class="text-start">
-                                    <h6 class="mb-0">John Doe</h6>
-                                    <small class="text-muted">Traveler</small>
-                                </div>
-                            </div>
+                                @endfor
+                                <i class="fas fa-star-half-alt"></i>
+                                <small class="text-muted ms-1">(4.5/5)</small>
+                            </span>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card border-0 h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="mb-3">
-                                <span class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </span>
+                        <p class="card-text mb-4">"Strategic location close to the city center. Complete facilities and very friendly staff."</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="bg-info rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white"></i>
                             </div>
-                            <p class="card-text mb-4">"Strategic location close to the city center. Complete facilities and very friendly staff."</p>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Testimonial 2">
-                                <div class="text-start">
-                                    <h6 class="mb-0">Jane Smith</h6>
-                                    <small class="text-muted">Family Traveler</small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="col-md-4">
-                    <div class="card border-0 h-100">
-                        <div class="card-body text-center p-4">
-                            <div class="mb-3">
-                                <span class="text-warning">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="far fa-star"></i>
-                                </span>
-                            </div>
-                            <p class="card-text mb-4">"Very affordable price for the quality provided. Highly recommended for backpackers."</p>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <img src="{{ asset('img/haha.jpg') }}" class="rounded-circle me-3" width="50" height="50" alt="Testimonial 3">
-                                <div class="text-start">
-                                    <h6 class="mb-0">Robert Johnson</h6>
-                                    <small class="text-muted">Backpacker</small>
-                                </div>
+                            <div class="text-start">
+                                <h6 class="mb-0">Jane Smith</h6>
+                                <small class="text-muted">Family Traveler</small>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            
+            <div class="col-md-4">
+                <div class="card border-0 h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-3">
+                            <span class="text-warning">
+                                {{-- RATING DEFAULT --}}
+                                @for($i = 1; $i <= 4; $i++)
+                                    <i class="fas fa-star"></i>
+                                @endfor
+                                <i class="far fa-star"></i>
+                                <small class="text-muted ms-1">(4/5)</small>
+                            </span>
+                        </div>
+                        <p class="card-text mb-4">"Very affordable price for the quality provided. Highly recommended for backpackers."</p>
+                        <div class="d-flex align-items-center justify-content-center">
+                            <div class="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 50px; height: 50px;">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <div class="text-start">
+                                <h6 class="mb-0">Robert Johnson</h6>
+                                <small class="text-muted">Backpacker</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforelse
         </div>
+
+        {{-- View All Testimonials Button --}}
+        @if($testimonials->count() > 0)
+        <div class="text-center mt-5">
+            <a href="{{ route('testimonials.all') }}" class="btn btn-outline-success">
+                <i class="fas fa-comments me-2"></i> View All Testimonials
+            </a>
+        </div>
+        @endif
     </div>
+</div>
 
     {{-- Newsletter Section --}}
     <div class="container py-5">

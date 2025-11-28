@@ -18,11 +18,11 @@ class PemesananSeeder extends Seeder
     public function run(): void
     {
         // 1. Cari user dengan ID 5 (Pelanggan) dan kamar pertama yang tersedia.
-        $pelanggan = User::find(5);
+        $pelanggan = User::find(3);
         $kamar = Kamar::first();
         
         if (!$pelanggan || !$kamar) {
-            $this->command->warn('Skip PemesananSeeder: User ID 5 atau data kamar tidak ditemukan. Pastikan data dasar sudah ada.');
+            $this->command->warn('Skip PemesananSeeder: User ID 3 atau data kamar tidak ditemukan. Pastikan data dasar sudah ada.');
             return;
         }
 
@@ -37,7 +37,7 @@ class PemesananSeeder extends Seeder
         // --- BUAT DATA PEMESANAN ---
         
         // Cek apakah pemesanan ini sudah ada (mencegah duplikasi jika seeder dijalankan berkali-kali)
-        $existingOrder = Pemesanan::where('pelanggan_id', 5)
+        $existingOrder = Pemesanan::where('pelanggan_id', 3)
                                 ->where('status', 'selesai')
                                 ->whereDate('tgl_check_out', $tglCheckOut->toDateString())
                                 ->exists();
@@ -54,10 +54,10 @@ class PemesananSeeder extends Seeder
                 'catatan' => 'Pemesanan khusus untuk pengujian fitur ulasan.',
                 'total_harga' => 250000.00,
                 'batas_pembayaran' => null,
-                'status' => 'selesai', // Status harus 'berhasil' atau 'selesai'
+                'status' => 'dikonfirmasi', // Status harus 'berhasil' atau 'selesai'
             ]);
         }
 
-        $this->command->info("Data pemesanan untuk User ID 5 (status 'selesai') berhasil dibuat.");
+        $this->command->info("Data pemesanan untuk User ID 3 (status 'selesai') berhasil dibuat.");
     }
 }

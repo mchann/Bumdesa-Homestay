@@ -570,7 +570,7 @@
         @endif
         
         <div class="footer">
-            <p>&copy; {{ date('Y') }} UMKM Lokal Banyuwangi. Semua hak dilindungi.</p>
+            <p>&copy; {{ date('Y') }} UMKM Lokal Desa Tamansari.</p>
         </div>
     </div>
 

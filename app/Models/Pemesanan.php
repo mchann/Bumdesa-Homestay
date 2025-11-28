@@ -224,7 +224,7 @@ class Pemesanan extends Model
      */
     public function getBisaBeriUlasanAttribute()
     {
-        $statusValid = in_array($this->status, ['berhasil', 'selesai']);
+        $statusValid = in_array($this->status, ['dikonfirmasi']);
 
         // Mengambil tanggal check-out dari DB dan mengatur waktunya menjadi 11:00:00
         $waktuCheckOutBatas = Carbon::parse($this->tgl_check_out)->setTime(11, 0, 0);

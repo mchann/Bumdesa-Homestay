@@ -152,6 +152,7 @@
         </div>
 
         {{-- Room availability form --}}
+
         @if(isset($homestay) && $homestay)
         <form method="GET" action="{{ route('homestay.details', ['id' => $homestay->homestay_id]) }}">
         @endif
@@ -159,8 +160,9 @@
         <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" id="availability" data-aos="fade-up">
             <div class="card-header bg-light">
                 <h5 class="fw-semibold mb-0 d-flex align-items-center">
-                    <i class="bi bi-calendar-date text-success me-2"></i> Check Room Availability
+                    <i class="bi bi-calendar-date text-success me-2"></i> Check Room Availability<span style="color: red;">*</span>
                 </h5>
+               
             </div>
             <div class="card-body">
                 <div class="row gy-3">
@@ -202,18 +204,32 @@
         </div>
         </form>
 
-        {{-- Room list --}}
+       @php
+    use Carbon\Carbon;
+    $checkIn = request('check_in');
+    $checkOut = request('check_out');
+    
+    // Tentukan apakah tanggal sudah diisi
+    $datesFilled = $checkIn && $checkOut;
+    
+    // Konversi ke Carbon hanya jika sudah diisi
+    $checkInCarbon = $checkIn ? Carbon::parse($checkIn) : null;
+    $checkOutCarbon = $checkOut ? Carbon::parse($checkOut) : null;
+@endphp
+
+{{-- Room list --}}
 <div class="mb-5" data-aos="fade-up">
     <h4 class="fw-semibold mb-4 d-flex align-items-center">
         <i class="bi bi-door-open text-success me-2"></i> Room Options
     </h4>
-
-    @php
-        use Carbon\Carbon;
-        $checkIn = request('check_in') ? Carbon::parse(request('check_in')) : null;
-        $checkOut = request('check_out') ? Carbon::parse(request('check_out')) : null;
-    @endphp
-
+    
+    {{-- LOGIKA 1: Menampilkan Pesan Wajib Isi Tanggal --}}
+    @if(!$datesFilled)
+        <p><span style="color: red;">* Note : Please fill in the Check-in and Check-out dates before booking.</span></p>
+    @endif
+    
+    {{-- Bagian Pengecekan Ketersediaan dan Looping Kamar --}}
+    
     @if(count($kamarGrouped) === 0)
         <div class="alert alert-warning">
             No rooms available for your search criteria
@@ -222,11 +238,13 @@
 
     @foreach($kamarGrouped as $jenis => $kamarList)
         @php
-            $kamarList = $kamarList->filter(function ($kamar) use ($checkIn, $checkOut) {
+            // Gunakan $checkInCarbon dan $checkOutCarbon di filter
+            $kamarList = $kamarList->filter(function ($kamar) use ($checkInCarbon, $checkOutCarbon) {
                 foreach ($kamar->roomClose as $penutupan) {
                     $start = Carbon::parse($penutupan->start_date);
                     $end = Carbon::parse($penutupan->end_date);
-                    if ($checkIn && $checkOut && $checkIn->lte($end) && $checkOut->gte($start)) {
+                    // Gunakan $checkInCarbon dan $checkOutCarbon untuk pengecekan
+                    if ($checkInCarbon && $checkOutCarbon && $checkInCarbon->lte($end) && $checkOutCarbon->gte($start)) {
                         return false; // kamar sedang ditutup
                     }
                 }
@@ -237,11 +255,26 @@
 
             $firstKamar = $kamarList->first();
             $stok = $kamarList->count();
+            
+            // Tentukan URL dan status tombol Book
+            $bookUrl = $datesFilled ? route('pelanggan.pemesanan.create', [
+                'homestay_id' => $homestay->homestay_id,
+                'kamar_id' => $firstKamar->kamar_id,
+                'check_in' => $checkIn, // Gunakan string request asli
+                'check_out' => $checkOut, // Gunakan string request asli
+                'dewasa' => request('dewasa'),
+                'anak' => request('anak')
+            ]) : '#';
+            
+            $buttonClass = $datesFilled ? 'btn-success' : 'btn-secondary disabled';
+            $buttonText = $datesFilled ? '<i class="bi bi-cart-plus me-1"></i> Book' : '<i class="bi bi-calendar-x me-1"></i> Fill Dates';
+
         @endphp
 
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-3 room-card">
             <div class="row g-0">
                 <div class="col-md-4 position-relative">
+                    {{-- ... (Bagian gambar kamar tetap sama) ... --}}
                     @if($firstKamar->foto_kamar)
                         <img src="{{ asset('storage/'.$firstKamar->foto_kamar) }}" class="w-100 h-100 object-fit-cover" style="min-height: 220px">
                     @else
@@ -269,6 +302,7 @@
                             </div>
                         </div>
 
+                        {{-- ... (Bagian detail kamar tetap sama) ... --}}
                         <div class="d-flex gap-4 mb-3 small text-muted">
                             <div><i class="bi bi-people-fill text-success me-1"></i> {{ $firstKamar->kapasitas ?? 2 }} persons</div>
                             <div><i class="bi bi-door-open text-success me-1"></i> {{ $firstKamar->tipe_tempat_tidur ?? 'Double Bed' }}</div>
@@ -285,6 +319,7 @@
                             <div>
                                 <div class="text-muted small mb-1">*Price excluding tax</div>
                                 <div class="d-flex gap-2">
+                                    {{-- ... (Bagian Fasilitas tetap sama) ... --}}
                                     @php
                                         $facilities = [];
                                         $deskripsi = strtolower($firstKamar->deskripsi_kamar ?? '');
@@ -313,17 +348,15 @@
                                     @endforeach
                                 </div>
                             </div>
-                            <a href="{{ route('pelanggan.pemesanan.create', [
-                                'homestay_id' => $homestay->homestay_id,
-                                'kamar_id' => $firstKamar->kamar_id,
-                                'check_in' => request('check_in'),
-                                'check_out' => request('check_out'),
-                                'dewasa' => request('dewasa'),
-                                'anak' => request('anak')
-                            ]) }}" 
-                            class="btn btn-success rounded-pill px-4">
-                                <i class="bi bi-cart-plus me-1"></i> Book
+                            
+                            {{-- LOGIKA 2: Tombol Book Dibuat Disabled --}}
+                            <a href="{{ $bookUrl }}" 
+                               class="btn {{ $buttonClass }} rounded-pill px-4"
+                               @if(!$datesFilled) onclick="event.preventDefault(); alert('Please fill in the Check-in and Check-out dates first.');" @endif
+                               >
+                                {!! $buttonText !!}
                             </a>
+                            
                         </div>
                     </div>
                 </div>
@@ -332,88 +365,101 @@
     @endforeach
 </div>
 
-        {{-- === REVIEWS SECTION ========================================== --}}
-        <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" data-aos="fade-up">
-          <div class="card-header bg-light">
-            <h4 class="fw-semibold mb-0 d-flex align-items-center">
-              <i class="bi bi-chat-square-text text-success me-2"></i> Guest Reviews
-            </h4>
-          </div>
-          <div class="card-body">
-            <div class="row text-center mb-4">
-              <div class="col">
-                <div class="display-5 fw-bold text-success">4.8</div>
-                <div class="small text-muted">Overall Rating</div>
-                <div class="mt-2">
-                  <i class="bi bi-star-fill text-warning"></i>
-                  <i class="bi bi-star-fill text-warning"></i>
-                  <i class="bi bi-star-fill text-warning"></i>
-                  <i class="bi bi-star-fill text-warning"></i>
-                  <i class="bi bi-star-half text-warning"></i>
-                </div>
-              </div>
-              <div class="col border-start">
-                <div class="fw-bold">5.0</div>
-                <div class="small text-muted">Cleanliness</div>
-                <div class="progress mt-2" style="height: 6px;">
-                  <div class="progress-bar bg-success" style="width: 100%"></div>
-                </div>
-              </div>
-              <div class="col border-start">
-                <div class="fw-bold">4.9</div>
-                <div class="small text-muted">Comfort</div>
-                <div class="progress mt-2" style="height: 6px;">
-                  <div class="progress-bar bg-success" style="width: 98%"></div>
-                </div>
-              </div>
-              <div class="col border-start">
-                <div class="fw-bold">4.7</div>
-                <div class="small text-muted">Location</div>
-                <div class="progress mt-2" style="height: 6px;">
-                  <div class="progress-bar bg-success" style="width: 94%"></div>
-                </div>
-              </div>
-            </div>
-            
-            <div class="row mt-4">
-              @foreach([
-                ['rating' => 5, 'title' => 'Amazing experience', 'comment' => 'The homestay was extremely clean and comfortable.', 'author' => 'Fitriani Salim'],
-                ['rating' => 5, 'title' => 'Will definitely come back', 'comment' => 'Location was perfect and host was very helpful.', 'author' => 'Rizki Agung Wicaksono'],
-                ['rating' => 4, 'title' => 'Highly recommend', 'comment' => 'Beautiful scenery and very cozy place to stay.', 'author' => 'Dwi Cahyo Kusuma']
-              ] as $review)
-              <div class="col-md-4 mb-3">
-                <div class="border rounded-4 p-3 h-100">
-                  <div class="d-flex align-items-center mb-2">
-                    <div class="me-2">
-                      @for($i = 0; $i < 5; $i++)
-                        @if($i < $review['rating'])
-                          <i class="bi bi-star-fill text-warning"></i>
+       {{-- === REVIEWS SECTION ========================================== --}}
+@php
+    // Gunakan accessor yang sudah ada di model
+    $averageRating = $homestay->rating_rata_rata;
+    $totalReviews = $homestay->jumlah_ulasan;
+    
+    // Ambil ulasan terbaru untuk ditampilkan
+    $recentReviews = $homestay->ulasans()
+        ->with('pelanggan')
+        ->where('disembunyikan', false)
+        ->whereNotNull('komentar')
+        ->where('komentar', '!=', '')
+        ->orderBy('created_at', 'desc')
+        ->take(3)
+        ->get();
+@endphp
+
+<div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" data-aos="fade-up">
+    <div class="card-header bg-light">
+        <h4 class="fw-semibold mb-0 d-flex align-items-center">
+            <i class="fas fa-comments text-success me-2"></i> Ulasan Tamu
+            @if($totalReviews > 0)
+                <span class="badge bg-success ms-2">{{ $totalReviews }}</span>
+            @endif
+        </h4>
+    </div>
+    <div class="card-body">
+        @if($totalReviews > 0)
+            <!-- Overall Rating -->
+            <div class="text-center mb-4 p-4 bg-light rounded-3">
+                <div class="display-4 fw-bold text-success mb-2">{{ number_format($averageRating, 1) }}/5.0</div>
+                <div class="mb-3">
+                    @for($i = 1; $i <= 5; $i++)
+                        @if($i <= $averageRating)
+                            <i class="fas fa-star text-warning fa-lg"></i>
+                        @elseif($i - 0.5 <= $averageRating)
+                            <i class="fas fa-star-half-alt text-warning fa-lg"></i>
                         @else
-                          <i class="bi bi-star text-warning"></i>
+                            <i class="far fa-star text-warning fa-lg"></i>
                         @endif
-                      @endfor
-                    </div>
-                    <span class="fw-bold">{{ $review['title'] }}</span>
-                  </div>
-                  <p class="small mb-2 text-muted">{{ $review['comment'] }}</p>
-                  <div class="small text-muted d-flex align-items-center">
-                    <div class="bg-success bg-opacity-10 rounded-circle p-2 me-2">
-                      <i class="bi bi-person text-success"></i>
-                    </div>
-                    {{ $review['author'] }}
-                  </div>
+                    @endfor
                 </div>
-              </div>
-              @endforeach
+                <div class="text-muted">Berdasarkan {{ $totalReviews }} ulasan tamu</div>
             </div>
-            
+
+            <!-- Recent Reviews -->
+            <div class="row">
+                @foreach($recentReviews as $review)
+                <div class="col-md-6 mb-3">
+                    <div class="border rounded-3 p-3 h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded-circle p-2 me-3">
+                                    <i class="fas fa-user text-success"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-medium text-dark">{{ $review->pelanggan->name ?? 'Tamu' }}</div>
+                                    <small class="text-muted">{{ $review->created_at->format('d M Y') }}</small>
+                                </div>
+                            </div>
+                            <div class="text-warning">
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $review->rating)
+                                        <i class="fas fa-star"></i>
+                                    @else
+                                        <i class="far fa-star"></i>
+                                    @endif
+                                @endfor
+                            </div>
+                        </div>
+                        <p class="text-muted mb-0 mt-2">
+                            "{{ $review->komentar }}"
+                        </p>
+                    </div>
+                </div>
+                @endforeach
+            </div>
+
+            @if($totalReviews > 3)
             <div class="text-center mt-4">
-              <a href="#" class="btn btn-outline-success">
-                <i class="bi bi-chat-left-text me-2"></i> View All Reviews
-              </a>
+                <a href="{{ route('homestay.reviews', $homestay->homestay_id) }}" class="btn btn-outline-success btn-sm">
+                    <i class="fas fa-arrow-down me-2"></i> Tampilkan Lebih Banyak Ulasan
+                </a>
             </div>
-          </div>
-        </div>
+            @endif
+
+        @else
+            <div class="text-center py-5">
+                <i class="fas fa-comments fa-4x text-muted mb-3"></i>
+                <h5 class="text-muted">Belum Ada Ulasan</h5>
+                <p class="text-muted">Jadilah yang pertama berbagi pengalaman menginap Anda</p>
+            </div>
+        @endif
+    </div>
+</div>
 
         {{-- === LOCATION DETAILS ========================================== --}}
         <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden" data-aos="fade-up">

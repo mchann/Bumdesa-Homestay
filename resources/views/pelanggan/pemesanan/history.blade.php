@@ -31,6 +31,7 @@
                     @endif
                     
                     @if($pemesanan->count() > 0)
+                        <!-- Statistics Cards -->
                         <div class="row mb-4">
                             <div class="col-md-3">
                                 <div class="card bg-primary bg-opacity-10 border-0 rounded-3">
@@ -66,6 +67,20 @@
                             </div>
                         </div>
 
+                        <!-- Info Pagination -->
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="text-muted">
+                                Menampilkan <strong>{{ $pemesanan->firstItem() ?? 0 }}</strong> - 
+                                <strong>{{ $pemesanan->lastItem() ?? 0 }}</strong> dari 
+                                <strong>{{ $pemesanan->total() }}</strong> pemesanan
+                            </div>
+                            <div class="text-muted">
+                                Halaman <strong>{{ $pemesanan->currentPage() }}</strong> dari 
+                                <strong>{{ $pemesanan->lastPage() }}</strong>
+                            </div>
+                        </div>
+
+                        <!-- Table -->
                         <div class="table-responsive">
                             <table class="table table-hover table-borderless">
                                 <thead class="table-success">
@@ -188,12 +203,90 @@
                             </table>
                         </div>
                         
-                        <div class="d-flex justify-content-center mt-4">
+                        <!-- Pagination dengan styling yang lebih baik -->
+                        @if($pemesanan->hasPages())
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="text-muted">
+                                Menampilkan <strong>{{ $pemesanan->firstItem() }}</strong> - 
+                                <strong>{{ $pemesanan->lastItem() }}</strong> dari 
+                                <strong>{{ $pemesanan->total() }}</strong> hasil
+                            </div>
+                            
                             <nav aria-label="Page navigation">
-                                {{ $pemesanan->links() }}
+                                <ul class="pagination pagination-sm mb-0">
+                                    {{-- Previous Page Link --}}
+                                    @if($pemesanan->onFirstPage())
+                                        <li class="page-item disabled">
+                                            <span class="page-link">‹ Previous</span>
+                                        </li>
+                                    @else
+                                        <li class="page-item">
+                                            <a class="page-link text-success" href="{{ $pemesanan->previousPageUrl() }}" rel="prev">‹ Previous</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Pagination Elements --}}
+                                    @php
+                                        $current = $pemesanan->currentPage();
+                                        $last = $pemesanan->lastPage();
+                                        $start = max(1, $current - 2);
+                                        $end = min($last, $current + 2);
+                                    @endphp
+
+                                    {{-- First Page Link --}}
+                                    @if($start > 1)
+                                        <li class="page-item">
+                                            <a class="page-link text-success" href="{{ $pemesanan->url(1) }}">1</a>
+                                        </li>
+                                        @if($start > 2)
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        @endif
+                                    @endif
+
+                                    {{-- Array Of Links --}}
+                                    @for($page = $start; $page <= $end; $page++)
+                                        @if($page == $current)
+                                            <li class="page-item active">
+                                                <span class="page-link bg-success border-success">{{ $page }}</span>
+                                            </li>
+                                        @else
+                                            <li class="page-item">
+                                                <a class="page-link text-success" href="{{ $pemesanan->url($page) }}">{{ $page }}</a>
+                                            </li>
+                                        @endif
+                                    @endfor
+
+                                    {{-- Last Page Link --}}
+                                    @if($end < $last)
+                                        @if($end < $last - 1)
+                                            <li class="page-item disabled">
+                                                <span class="page-link">...</span>
+                                            </li>
+                                        @endif
+                                        <li class="page-item">
+                                            <a class="page-link text-success" href="{{ $pemesanan->url($last) }}">{{ $last }}</a>
+                                        </li>
+                                    @endif
+
+                                    {{-- Next Page Link --}}
+                                    @if($pemesanan->hasMorePages())
+                                        <li class="page-item">
+                                            <a class="page-link text-success" href="{{ $pemesanan->nextPageUrl() }}" rel="next">Next ›</a>
+                                        </li>
+                                    @else
+                                        <li class="page-item disabled">
+                                            <span class="page-link">Next ›</span>
+                                        </li>
+                                    @endif
+                                </ul>
                             </nav>
                         </div>
+                        @endif
+
                     @else
+                        <!-- Empty State -->
                         <div class="text-center py-5">
                             <div class="mb-4">
                                 <i class="fas fa-history fa-4x text-muted mb-3"></i>
@@ -240,6 +333,24 @@
     }
     .bg-opacity-10 {
         background-color: rgba(var(--bs-primary-rgb), 0.1) !important;
+    }
+    .pagination .page-link {
+        border: 1px solid #dee2e6;
+        color: #25D366;
+        margin: 0 2px;
+        border-radius: 0.5rem;
+    }
+    .pagination .page-link:hover {
+        background-color: #e8f5e8;
+        border-color: #25D366;
+    }
+    .pagination .page-item.active .page-link {
+        background-color: #25D366;
+        border-color: #25D366;
+    }
+    .pagination .page-item.disabled .page-link {
+        color: #6c757d;
+        background-color: #f8f9fa;
     }
 </style>
 

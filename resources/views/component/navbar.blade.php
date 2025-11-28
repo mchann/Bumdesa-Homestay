@@ -1,130 +1,108 @@
 <!-- Navbar Start -->
+<!-- Navbar Start -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top py-lg-2 py-1">
     <div class="container-fluid px-lg-4 px-3">
-        {{-- Navbar logo --}}
+
+        <!-- Logo -->
         <a class="navbar-brand d-flex align-items-center me-lg-4 me-2" href="{{ route('home') }}">
-            <img src="{{ asset('img/logo-tamansari.png') }}" width="60" height="60" alt="Logo" class="img-fluid" style="max-width: 60px; height: auto; transition: all 0.3s ease;">
+            <img src="{{ asset('img/logo-tamansari.png') }}" width="60" height="60" class="img-fluid">
         </a>
 
-        {{-- Navbar toggler --}}
-        <button class="navbar-toggler ms-auto border-0 focus:shadow-none focus:outline-none" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <!-- Toggler -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        {{-- Navbar menus --}}
+        <!-- Menu -->
         <div class="collapse navbar-collapse mt-lg-0 mt-2" id="navbarCollapse">
+
+            <!-- Main Menu -->
             <ul class="navbar-nav mx-auto mb-lg-0 mb-3 gap-lg-2 gap-1">
                 <li class="nav-item">
-                    <a href="{{ route('home') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('home') ? 'active bg-gradient-primary' : '' }}">
-                        <span class="position-relative">
-                            Home
-                            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
-                        </span>
+                    <a href="{{ route('home') }}" class="nav-link text-light px-lg-3 px-2 py-2 
+                    {{ request()->routeIs('home') ? 'active bg-gradient-primary' : '' }}">
+                        Home
                     </a>
                 </li>
-                
-                {{-- Simple Destinations Dropdown --}}
+
+                <!-- Destinations -->
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('destinations*') ? 'active bg-gradient-primary' : '' }}" 
-                       href="#" 
-                       id="destinationsDropdown" 
-                       role="button" 
-                       data-bs-toggle="dropdown" 
-                       aria-expanded="false">
-                        <span class="position-relative">
-                            Destinations
-                            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
-                        </span>
+                    <a class="nav-link dropdown-toggle text-light px-lg-3 px-2 py-2" href="#" data-bs-toggle="dropdown">
+                        Destinations
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0" aria-labelledby="destinationsDropdown">
-    <li>
-        <a class="dropdown-item {{ request()->routeIs('destinations.ijencrater') ? 'active' : '' }}" 
-           href="{{ route('destinations.ijencrater') }}">
-           Ijen Crater
-        </a>
-    </li>
-    <li>
-        <a class="dropdown-item {{ request()->routeIs('destinations.gandrung') ? 'active' : '' }}" 
-           href="{{ route('destinations.gandrung') }}">
-           Gandrung Terracotta Park
-        </a>
-    </li>
-    <li>
-        <a class="dropdown-item {{ request()->routeIs('destinations.sendang') ? 'active' : '' }}" 
-           href="{{ route('destinations.sendang') }}">
-           Sendang Seruni
-        </a>
-    </li>
-    <li class="nav-item">
-                    <a href="{{ route('packages') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('packages') ? 'active bg-gradient-primary' : '' }}">
-                        <span class="position-relative">
-                            Tour Packages
-                            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
-                        </span>
-                    </a>
-                </li>
-    <li><hr class="dropdown-divider"></li>
-</ul>
+                    <ul class="dropdown-menu dropdown-menu-dark shadow-lg border-0">
+                        <li><a class="dropdown-item" href="{{ route('destinations.ijencrater') }}">Ijen Crater</a></li>
+                        <li><a class="dropdown-item" href="{{ route('destinations.gandrung') }}">Gandrung Terracotta Park</a></li>
+                        <li><a class="dropdown-item" href="{{ route('destinations.sendang') }}">Sendang Seruni</a></li>
+                    </ul>
                 </li>
 
                 <li class="nav-item">
-    <a href="{{ route('umkm') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('UMKM') ? 'active bg-gradient-primary' : '' }}">
-        <span class="position-relative">
-            UMKM
-            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
-        </span>
-    </a>
-</li>
+                    <a href="{{ route('packages') }}" class="nav-link text-light px-lg-3 px-2 py-2">
+                        Tour Packages
+                    </a>
+                </li>
+
                 <li class="nav-item">
-                    <a href="{{ route('homestay.index') }}" class="nav-link text-light px-lg-3 px-2 py-2 rounded {{ request()->routeIs('homestay.index') ? 'active bg-gradient-primary' : '' }}">
-                        <span class="position-relative">
-                            Homestays
-                            <span class="position-absolute bottom-0 start-0 w-0 h-1 bg-primary transition-all" style="transition-duration: 0.3s;"></span>
-                        </span>
+                    <a href="{{ route('umkm') }}" class="nav-link text-light px-lg-3 px-2 py-2">
+                        UMKM
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('homestay.index') }}" class="nav-link text-light px-lg-3 px-2 py-2">
+                        Homestays
                     </a>
                 </li>
             </ul>
-        </div>
 
-        {{-- User Icon with Notification Badge --}}
-        <div class="d-flex align-items-center justify-content-center ms-lg-4 ms-2">
-            @auth
-                <div class="dropdown">
-                    <a class="nav-link text-light position-relative p-0" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <div class="position-relative" style="width: 42px; height: 42px;">
-                            <div class="bg-secondary d-flex align-items-center justify-content-center rounded-circle" style="width: 100%; height: 100%; transition: all 0.3s ease;">
-                                <i class="fas fa-user text-white" style="font-size: 1.2rem;"></i>
-                            </div>
-                        </div>
+            <!-- USER DROPDOWN (mobile & desktop dalam collapse, tetap rapi) -->
+            <ul class="navbar-nav ms-lg-auto">
+                @auth
+                <li class="nav-item dropdown">
+                    <a class="nav-link text-light dropdown-toggle d-flex align-items-center"
+                       href="#" data-bs-toggle="dropdown">
+
+                        <!-- ICON TIDAK DIGANTI -->
+                        <i class="fas fa-user-circle fs-3"></i>
+
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" aria-labelledby="userDropdown" style="min-width: 220px;">
+
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2">
                         @if(Auth::user()->role === 'admin')
-                            <li><a class="dropdown-item py-2 px-3" href="{{ route('admin.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
                         @elseif(Auth::user()->role === 'pemilik')
-                            <li><a class="dropdown-item py-2 px-3" href="{{ route('pemilik.dashboard') }}"><i class="fas fa-tachometer-alt me-2"></i>Dashboard</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('pemilik.dashboard') }}">Dashboard</a></li>
                         @elseif(Auth::user()->role === 'pelanggan')
-                            <li><a class="dropdown-item py-2 px-3" href="{{ route('pelanggan.profile') }}"><i class="fas fa-user me-2"></i>My Account</a></li>
-                            <li><a class="dropdown-item py-2 px-3" href="{{ route('pelanggan.history') }}">
-                                <i class="fas fa-clipboard-list me-2"></i>My Order
-                            </a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('pelanggan.profile') }}">My Account</a></li>
+                            <li><a class="dropdown-item py-2" href="{{ route('pelanggan.history') }}">My Order</a></li>
                         @endif
-                        <li><hr class="dropdown-divider my-1"></li>
+
+                        <li><hr class="dropdown-divider"></li>
+
                         <li>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="dropdown-item py-2 px-3 text-danger"><i class="fas fa-sign-out-alt me-2"></i>Logout</button>
+                                <button type="submit" class="dropdown-item text-danger py-2">
+                                    Logout
+                                </button>
                             </form>
                         </li>
                     </ul>
-                </div>
-            @else
-                <a href="{{ route('login') }}" class="nav-link text-light d-flex align-items-center px-3 py-2 rounded bg-primary-hover"> 
-                    <span class="d-none d-lg-inline">Login</span>
-                </a>
-            @endauth
+                </li>
+
+                @else
+                <li class="nav-item">
+                    <a href="{{ route('login') }}" class="nav-link text-light px-3 py-2">Login</a>
+                </li>
+                @endauth
+            </ul>
+
         </div>
     </div>
 </nav>
+<!-- Navbar End -->
+
 <!-- Navbar End -->
 
 {{-- Dummy div to prevent content from being hidden under navbar --}}

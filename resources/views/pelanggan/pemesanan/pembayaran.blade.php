@@ -112,64 +112,35 @@
             <!-- Aksi Pembayaran -->
             @if (now()->lessThan($pemesanan->batas_pembayaran))
                 <div class="card shadow-sm border-0 rounded-4 mb-3">
-                    <div class="card-body">
-                        <h6 class="fw-bold text-success mb-3">Pilih Metode Pembayaran</h6>
+                     <div class="card-body">
+                        <button type="button" class="btn btn-outline-success" id="payButton">
+                                    <i class="bi bi-wallet2 me-2"></i>Bayar Sekarang
+                                </button>
                         <div class="row gy-3">
-                            <div class="col-md-6">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="pm_qris" value="qris" checked>
-                                    <label class="form-check-label" for="pm_qris">QRIS</label>
-                                </div>
-                                <div class="form-check mt-2">
-                                    <input class="form-check-input" type="radio" name="payment_method" id="pm_bri" value="bri">
-                                    <label class="form-check-label" for="pm_bri">BRI</label>
-                                </div>
-                            </div>
+                           
 
                             <div class="col-md-6" id="bankDetails">
                                 <!-- Default show QRIS info -->
-                                <div data-method="qris" class="method-detail">
+                                {{-- <div data-method="qris" class="method-detail">
                                     <p class="mb-1"><strong>QRIS</strong></p>
                                     <p class="text-muted small mb-0">Scan QRIS melalui aplikasi mobile banking atau dompet digital Anda.</p>
-                                </div>
+                                </div> --}}
 
-                                <div data-method="bri" class="method-detail d-none">
+                                {{-- <div data-method="bri" class="method-detail d-none">
                                     <p class="mb-1"><strong>BRI - Rekening Virtual</strong></p>
                                     <div class="d-flex align-items-center mb-2">
                                         <code id="briAccount" class="me-2">1234 5678 9012 3456</code>
                                         <button type="button" class="btn btn-outline-secondary btn-sm" id="copyAccount">Salin</button>
                                     </div>
                                     <p class="text-muted small mb-0">Atas Nama: <strong>PT. Contoh Homestay</strong></p>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Upload bukti transfer -->
-                <div class="card shadow-sm border-0 rounded-4 mb-3">
-                    <div class="card-body">
-                        <h6 class="fw-bold text-success mb-3">Upload Bukti Pembayaran</h6>
-
-                        <form id="uploadForm" action="{{ route('pelanggan.pemesanan.uploadBukti', ['id' => $pemesanan->pemesanan_id]) }}" method="POST" enctype="multipart/form-data">
-                            @csrf
-                            <input type="hidden" name="payment_method" id="payment_method_input" value="qris">
-
-                            <div class="mb-3">
-                                <label for="bukti_transfer" class="form-label">Pilih File Bukti Transfer (JPG, PNG | max 2MB)</label>
-                                <input class="form-control" type="file" id="bukti_transfer" name="bukti_transfer" accept="image/*" required>
-                            </div>
-
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="btn btn-success" id="uploadButton">
-                                    <i class="bi bi-upload me-2"></i>Upload & Selesaikan Pembayaran
-                                </button>
-                                <button type="button" class="btn btn-outline-success" id="payButton">
-                                    <i class="bi bi-wallet2 me-2"></i>Bayar Sekarang (Metode Online)
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+               
                 </div>
             @else
                 <div class="alert alert-danger shadow-sm rounded-3">
