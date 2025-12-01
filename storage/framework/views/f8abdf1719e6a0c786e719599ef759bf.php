@@ -116,7 +116,7 @@
                 <div class="card shadow-sm border-0 rounded-4 mb-3">
                      <div class="card-body">
                         <button type="button" class="btn btn-outline-success" id="payButton">
-                                    <i class="bi bi-wallet2 me-2"></i>Bayar Sekarang (Metode Online)
+                                    <i class="bi bi-wallet2 me-2"></i>Bayar Sekarang
                                 </button>
                         <div class="row gy-3">
                            
@@ -165,8 +165,12 @@
     }, 1000);
 </script>
 
-<!-- Midtrans Snap client (sandbox). data-client-key is taken from config -->
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?php echo e(config('midtrans.clientKey')); ?>"></script>
+<!-- Midtrans Snap client. Load sandbox or production script based on config -->
+<?php if(config('midtrans.isProduction')): ?>
+    <script src="https://app.midtrans.com/snap/snap.js" data-client-key="<?php echo e(config('midtrans.clientKey')); ?>"></script>
+<?php else: ?>
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="<?php echo e(config('midtrans.clientKey')); ?>"></script>
+<?php endif; ?>
 
 <script>
     document.getElementById('payButton').addEventListener('click', function (e) {

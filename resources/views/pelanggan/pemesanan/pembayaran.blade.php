@@ -173,8 +173,12 @@
     }, 1000);
 </script>
 
-<!-- Midtrans Snap client (sandbox). data-client-key is taken from config -->
-<script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.clientKey') }}"></script>
+<!-- Midtrans Snap client. Load sandbox or production script based on config -->
+@if(config('midtrans.isProduction'))
+    <script src="https://app.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.clientKey') }}"></script>
+@else
+    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.clientKey') }}"></script>
+@endif
 
 <script>
     document.getElementById('payButton').addEventListener('click', function (e) {

@@ -13,6 +13,7 @@ use Midtrans\Snap;
 use Illuminate\Support\Facades\Response;
 use App\Services\MidtransService;
 use Midtrans\Config;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class PemesananController extends Controller
@@ -171,9 +172,28 @@ class PemesananController extends Controller
             ]
         ];
 
-        $paymentUrl = Snap::createTransaction($params)->redirect_url;
+        try {
+            $transaction = Snap::createTransaction($params);
+            Log::info('Midtrans createTransaction', [
+                'order_id' => $params['transaction_details']['order_id'],
+                'gross_amount' => $params['transaction_details']['gross_amount'],
+                'is_production' => Config::$isProduction,
+                'client_key_mask' => substr(config('midtrans.clientKey') ?? '', 0, 8),
+                'server_key_mask' => substr((string) config('midtrans.serverKey'), 0, 8) . '...'
+            ]);
 
-        return redirect($paymentUrl);
+            $paymentUrl = $transaction->redirect_url ?? null;
+
+            if (! $paymentUrl) {
+                Log::error('Midtrans createTransaction missing redirect_url', ['response' => json_encode($transaction)]);
+                return redirect()->back()->with('error', 'Gagal membuat link pembayaran (Midtrans tidak mengembalikan redirect_url).');
+            }
+
+            return redirect($paymentUrl);
+        } catch (\Exception $e) {
+            Log::error('Midtrans createTransaction exception', ['message' => $e->getMessage(), 'order_id' => $params['transaction_details']['order_id']]);
+            return redirect()->back()->with('error', 'Gagal membuat transaksi Midtrans: ' . $e->getMessage());
+        }
     }
 
     public function getSnapToken($id)
@@ -201,11 +221,24 @@ class PemesananController extends Controller
             ],
         ];
 
-        $snapToken = Snap::getSnapToken($params);
+        try {
+            $snapToken = Snap::getSnapToken($params);
 
-        return Response::json([
-            'snap_token' => $snapToken
-        ]);
+            Log::info('Midtrans getSnapToken', [
+                'order_id' => $params['transaction_details']['order_id'],
+                'gross_amount' => $params['transaction_details']['gross_amount'],
+                'snap_token_mask' => is_string($snapToken) ? substr($snapToken, 0, 8) . '...' : null,
+                'is_production' => Config::$isProduction,
+                'server_key_mask' => substr((string) config('midtrans.serverKey'), 0, 8) . '...'
+            ]);
+
+            return Response::json([
+                'snap_token' => $snapToken
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Midtrans getSnapToken exception', ['message' => $e->getMessage(), 'params' => $params]);
+            return Response::json(['error' => 'Gagal mendapatkan snap token: ' . $e->getMessage()], 500);
+        }
     }
 
     public function uploadBuktiTransfer(Request $request, $id)
